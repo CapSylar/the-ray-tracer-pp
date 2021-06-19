@@ -1,2 +1,2 @@
-add_executable( TEST_SOURCES Vec4_Tests.cpp Mat4_Tests.cpp Transformation_Tests.cpp ray_inter_Tests.cpp object_intersection_TESTs.cpp)
+add_executable( TEST_SOURCES Vec4_Tests.cpp Mat4_Tests.cpp Transformation_Tests.cpp ray_inter_Tests.cpp object_intersection_TESTs.cpp normal_reflection_Tests.cpp light_n_shading.cpp)
 TARGET_LINK_LIBRARIES( TEST_SOURCES LINK_PUBLIC Catch2::Catch2 tracerMath )

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <fstream>
+#include "Color.h"
 
 #include "Vec4.h"
 
@@ -37,8 +38,8 @@ public:
         for ( int i = 0 ; i < col * row ; ++i )
         {
             const auto &color = mem[i];
-            file << int (color.x * 255)  << " " << int (color.y * 255) <<
-            " " << int (color.z * 255) << '\n' ;
+            file << int (color.r * 255)  << " " << int (color.g * 255) <<
+            " " << int (color.b * 255) << '\n' ;
         }
 
         file.close();

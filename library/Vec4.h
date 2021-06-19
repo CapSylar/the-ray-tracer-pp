@@ -8,7 +8,6 @@
 struct Vec4;
 using Point = Vec4 ;
 using Vector = Vec4 ;
-using Color = Vec4;
 
 struct Vec4
 {

@@ -5,7 +5,7 @@
 #include <vector>
 #include <optional>
 
-#include "../src/Ray.h"
+#include "Ray.h"
 
 class Intersection;
 
@@ -13,6 +13,7 @@ struct Sphere
 {
     std::vector<Intersection> intersect ( const Ray &ray );
     void intersect ( const Ray &ray , std::vector<Intersection>& list ) ;
+    Vector normal_at ( Point world_point );
 
     Mat4 transform;
 };

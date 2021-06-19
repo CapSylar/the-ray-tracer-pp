@@ -8,7 +8,7 @@ struct Ray
 {
     Ray ( Point orig , Vector dir ): origin(orig) , direction(dir) {}
 
-    Point position( float t )
+    Point position( float t ) const
     {
         return origin + direction * t ;
     }
@@ -20,9 +20,13 @@ struct Ray
         direction = trans_matrix * direction ;
     }
 
+    static Vector reflect ( const Vector &in , const Vector &normal );
+
     Point origin;
     Vector direction;
 };
+
+Vector reflect ( const Vector &in , const Vector &normal );
 
 std::ostream& operator << ( std::ostream& os , const Ray &rhs );
 

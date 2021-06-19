@@ -26,3 +26,15 @@ void Sphere::intersect(const Ray &ray, std::vector<Intersection> &list)
         list.emplace_back( ((-b + sqrtf(delta)) / (2*a)) , *this );
     }
 }
+
+Vector Sphere::normal_at(Point world_point)
+{
+    // first transform world_point from world space to object space
+    Vector obj_point = transform.invert_copy() * world_point;
+    // we can now calculate the normal in object space
+    Vector obj_normal = obj_point - Vec4::getPoint();
+    Vector world_normal = transform.invert_copy().transpose() * obj_normal ;
+    world_normal.w = 0;
+
+    return world_normal.normalize() ;
+}

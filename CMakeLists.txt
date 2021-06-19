@@ -24,7 +24,7 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 
 
-add_executable( ${PROJECT_NAME} src/main.cpp src/Canvas.cpp src/Canvas.h src/Ray.cpp src/Ray.h)
+add_executable( ${PROJECT_NAME} src/main.cpp src/Canvas.cpp src/Canvas.h library/Ray.cpp library/Ray.h)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} m tracerMath )

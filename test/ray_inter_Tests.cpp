@@ -1,7 +1,7 @@
 #include "catch2/catch.hpp"
 #include <iostream>
 #include <vector>
-#include "../src/Ray.h"
+#include "Ray.h"
 #include "Sphere.h"
 #include "Intersection.h"
 
