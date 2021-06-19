@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(ray_tracer++)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # adding options
@@ -24,7 +24,7 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 
 
-add_executable( ${PROJECT_NAME} src/main.cpp src/Canvas.cpp src/Canvas.h)
+add_executable( ${PROJECT_NAME} src/main.cpp src/Canvas.cpp src/Canvas.h src/Ray.cpp src/Ray.h)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} m tracerMath )

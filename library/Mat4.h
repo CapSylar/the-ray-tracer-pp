@@ -13,7 +13,7 @@ public:
 
     static Mat4 IDENTITY();
 
-    Mat4() : m(16,0) {}
+    Mat4() : m({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) {} // TODO: join this and IDENTITY()
     Mat4( std::initializer_list<float> il ) : m( il.begin() , il.end() ) {}
 
     Mat4( Mat4 &&ref ) noexcept : m(std::move(ref.m)) {}

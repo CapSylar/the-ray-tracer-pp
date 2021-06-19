@@ -18,7 +18,10 @@ public:
     {
         // check bounds
         if ( x < 0 || x >= col || y < 0 || y >= row )
+        {
+            fprintf( stderr , "ignored write\n") ;
             return;
+        }
         Color copy = color;
         alloc.construct( mem + x+y*row , copy );
     }

@@ -1,8 +1,10 @@
 //TODO: the two following operations result in unwanted behavior if we ,
 // subtract a getPoint from a vector or if we add two points, make them safer
 // to use
+
 #include "Vec4.h"
 #include "utilities.h"
+
 
 Vec4 operator+ ( const Vec4 &lhs , const Vec4 &rhs )
 {
@@ -49,4 +51,11 @@ float operator * ( const Vec4 &lhs , const Vec4 &rhs ) // dot product
 Vec4 operator / ( const Vec4 &lhs , float rhs )
 {
     return lhs * (1/rhs);
+}
+
+std::ostream& operator << ( std::ostream& os , const Vec4 &rhs )
+{
+    os << "[" << rhs.x << "," << rhs.y << "," << rhs.z << "," << rhs.w << "]";
+
+    return os;
 }

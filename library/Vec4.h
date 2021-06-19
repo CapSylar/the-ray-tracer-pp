@@ -3,6 +3,7 @@
 
 #include <limits>
 #include <cmath>
+#include <iostream>
 
 struct Vec4;
 using Point = Vec4 ;
@@ -74,5 +75,6 @@ Vec4 operator * ( const Vec4 &lhs , float rhs );
 Vec4 operator * ( float lhs , const Vec4 &rhs );
 float operator * ( const Vec4 &lhs , const Vec4 &rhs );
 Vec4 operator / ( const Vec4 &lhs , float rhs );
+std::ostream& operator << ( std::ostream& os , const Vec4 &rhs );
 
 #endif //RAY_TRACER_VEC4_H
