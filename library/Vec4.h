@@ -21,11 +21,6 @@ public:
         return Vec4(x,y,z,1);
     }
 
-    static Vec4 getColor ( float r = 1 , float g = 1 , float b = 1 )
-    {
-        return Vec4( r , g , b , 0 );
-    }
-
     static Vec4 getVector(float x = 0 , float y = 0 , float z = 0 )
     {
         return Vec4(x ,y , z , 0 );

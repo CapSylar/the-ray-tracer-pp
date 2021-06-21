@@ -27,7 +27,7 @@ void Sphere::intersect(const Ray &ray, std::vector<Intersection> &list)
     }
 }
 
-Vector Sphere::normal_at(Point world_point)
+Vector Sphere::normal_at(Point world_point) const
 {
     // first transform world_point from world space to object space
     Vector obj_point = transform.invert_copy() * world_point;

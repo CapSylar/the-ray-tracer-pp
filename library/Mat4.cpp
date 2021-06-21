@@ -47,7 +47,7 @@ Mat4 Mat4::IDENTITY()
     return Mat4({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) ;
 }
 
-Mat4 Mat4::invert_copy()
+Mat4 Mat4::invert_copy() const
 { // from MESA implementation
 
     Mat4 inv;

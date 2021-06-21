@@ -16,6 +16,11 @@ public:
     Mat4() : m({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) {} // TODO: join this and IDENTITY()
     Mat4( std::initializer_list<float> il ) : m( il.begin() , il.end() ) {}
 
+    Mat4 ( const Mat4 &ref ): m(ref.m) {} 
+
+    Mat4& operator = ( Mat4 &ref )
+    = default;
+
     Mat4( Mat4 &&ref ) noexcept : m(std::move(ref.m)) {}
 
     Mat4& operator = ( Mat4 &&ref ) noexcept
@@ -58,7 +63,7 @@ public:
     Mat4& shear( float Xy , float Xz , float Yx , float Yz , float Zx , float Zy );
 
     Mat4& invert() ;
-    Mat4 invert_copy ();
+    Mat4 invert_copy () const;
 };
 
 bool operator == ( const Mat4 &lhs , const Mat4 &rhs );

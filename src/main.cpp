@@ -1,8 +1,9 @@
 #include "Canvas.h"
 #include "Ray.h"
 #include "Sphere.h"
-#include "Intersection.h"
 #include "Material.h"
+#include "World.h"
+#include "tracing.h"
 
 int main ()
 {
@@ -10,19 +11,24 @@ int main ()
 
     // hacks
 
-    float backside_x = 10;
-    float backside_y = 10;
+    float backside_x = 20;
+    float backside_y = 20;
 
     // pixel size
 
     double pixel_size_x = backside_x / 2000 ;
     double pixel_size_y = backside_y / 2000 ;
 
-    Sphere s;
-    s.transform.scale(1,1,1);
+    World w;
 
-    Material m(Color(1,0,0));
+    Sphere s ( Material(Color(1,0,0)) , Mat4::IDENTITY().scale(1,1,1) );
+    Sphere s1 ( Material(Color(0,1,0)) , Mat4::IDENTITY().scale(0.5,0.5,0.5).translate(0.3,0,-2) );
+
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10));
+
+    w.add( s );
+    w.add ( s1 );
+    w.add ( light );
 
     for ( int x = 0 ; x < 2000 ; ++x )
     {
@@ -38,18 +44,7 @@ int main ()
             cam_to_plane.normalize();
             Ray ray( current , cam_to_plane );
 
-            auto list = s.intersect( ray );
-
-            if ( list.empty() )
-            {
-                myCanvas.write(Color(0,0,0) , x , y );
-                continue;
-            }
-
-            auto surface_point = ray.position(Intersection::get_hit(list)->t);
-            auto surface_normal = s.normal_at(surface_point);
-            auto color = lighting( m , light , surface_point , -ray.direction , surface_normal );
-
+            auto color = Lighting::color_at( w , ray ) ;
             myCanvas.write( color , x , y );
         }
     }

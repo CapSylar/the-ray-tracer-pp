@@ -96,7 +96,10 @@ TEST_CASE("testing the get_hit function")
 
         auto ret = Intersection::get_hit(list);
 
-        REQUIRE( ret == s1 );
+        REQUIRE(ret.has_value());
+        auto value = ret.value() == s1;
+
+        REQUIRE( value );
     }
 
 
@@ -109,7 +112,9 @@ TEST_CASE("testing the get_hit function")
 
         auto ret = Intersection::get_hit(list);
 
-        REQUIRE( ret == s2 );
+
+        REQUIRE(ret.has_value());
+        REQUIRE( ret.value() == s2 );
     }
 
     SECTION("the hit, when all intersections are negative")
@@ -150,7 +155,8 @@ TEST_CASE("testing the get_hit function")
 
         auto ret = Intersection::get_hit(list);
 
-        REQUIRE( ret == s2 );
+        REQUIRE(ret.has_value());
+        REQUIRE( ret.value() == s2 );
     }
 }
 

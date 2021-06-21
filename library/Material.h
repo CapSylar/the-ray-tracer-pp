@@ -22,6 +22,5 @@ struct Light
     Light( Color intensity , Point position ) : intensity(intensity) , position(position) {}
 };
 
-Color lighting ( const Material &material , const Light &light , const Point &point , const Vector &eye , const Vector &normal );
 
 #endif //RAY_TRACER_MATERIAL_H
