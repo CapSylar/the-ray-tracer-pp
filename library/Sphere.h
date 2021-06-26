@@ -12,7 +12,7 @@ class Intersection;
 
 struct Sphere
 {
-    Sphere( Material mat = Material() , Mat4 trans = Mat4() ) : material(mat) , transform(trans) {}  
+    explicit Sphere( Mat4 trans = Mat4() , Material mat = Material() ) : material(mat) , transform(trans) {}
 
     std::vector<Intersection> intersect ( const Ray &ray );
     void intersect ( const Ray &ray , std::vector<Intersection>& list ) ;

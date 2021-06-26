@@ -31,7 +31,7 @@ TEST_CASE("testing phong shading")
 
     SECTION("default setting")
     {
-        auto res =  Lighting::lighting( m , light , position , Vec4::getVector(0,0,-1) , Vec4::getVector(0,0,-1));
+        auto res =  Lighting::lighting( m , light , position , Vec4::getVector(0,0,-1) , Vec4::getVector(0,0,-1) , false );
 
         REQUIRE( res == Color(1.9,1.9,1.9)) ;
     }
@@ -39,7 +39,7 @@ TEST_CASE("testing phong shading")
     SECTION("lighting with the eye between light and surface, eye offset 45")
     {
         Vector eyev = Vec4::getVector(0, sqrtf(2)/2 , sqrtf(2)/2 );
-        auto result = Lighting::lighting ( m , light , position , eyev , normalv );
+        auto result = Lighting::lighting ( m , light , position , eyev , normalv , false );
 
         REQUIRE( result == Color(1,1,1) );
     }
@@ -48,7 +48,7 @@ TEST_CASE("testing phong shading")
     {
         Vector eyev = Vec4::getVector(0,0,-1);
         Light this_light( Color() , Vec4::getPoint(0,10,-10) );
-        auto result = Lighting::lighting( m , this_light , position , eyev , normalv );
+        auto result = Lighting::lighting( m , this_light , position , eyev , normalv , false  );
         REQUIRE( result == Color(0.736396,0.736396,0.736396) );
     }
 
@@ -64,7 +64,46 @@ TEST_CASE("testing phong shading")
     {
         Vector eyev = Vec4::getVector( 0 , 0, -1 );
         Light this_light( Color() , Vec4::getPoint(0,0,10) );
-        auto result = Lighting::lighting( m , this_light , position , eyev , normalv );
+        auto result = Lighting::lighting( m , this_light , position , eyev , normalv , false );
         REQUIRE( result == Color(0.1,0.1,0.1) );
     }
+}
+
+TEST_CASE("testing for shadows")
+{
+    World w;
+    Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
+    Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
+    Sphere default_half;
+    default_half.transform.scale(0.5,0.5,0.5);
+
+    w.add(light);
+    w.add(default_unit);
+    w.add(default_half);
+
+    SECTION("there is no shadow when nothing is collinear with point and light")
+    {
+        Point p (0,10,0);
+        REQUIRE( Lighting::is_shadowed( w , p ) == false );
+    }
+
+    SECTION("the shadow when an object is between point and the light")
+    {
+        Point p (10,-10,10);
+        REQUIRE( Lighting::is_shadowed( w , p ) == true );
+    }
+
+    SECTION("there is no shadow when an object is behind the light")
+    {
+        Point p (-20 , 20 ,-20 );
+        REQUIRE( Lighting::is_shadowed( w , p ) == false );
+    }
+
+    SECTION("there is now shadow when a object is behind the point")
+    {
+        Point p (-2 , 2 , -2);
+        REQUIRE( Lighting::is_shadowed( w , p ) == false );
+    }
+
+
 }

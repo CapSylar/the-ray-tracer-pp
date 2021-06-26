@@ -61,7 +61,7 @@ TEST_CASE("testing how the camera constructs the rays")
     {
         World w;
         Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-        Sphere default_unit( Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
+        Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
         Sphere default_half;
         default_half.transform.scale(0.5,0.5,0.5);
 

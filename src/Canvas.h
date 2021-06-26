@@ -1,6 +1,7 @@
 #ifndef RAY_TRACER_CANVAS_H
 #define RAY_TRACER_CANVAS_H
 
+#include <algorithm>
 #include <memory>
 #include <fstream>
 #include "Color.h"
@@ -23,7 +24,9 @@ public:
             fprintf( stderr , "ignored write\n") ;
             return;
         }
-        Color copy = color;
+
+        // clamp the color between 0 and 1
+        Color copy ( std::clamp(color.r,0.0f,1.0f) , std::clamp(color.g,0.0f,1.0f) , std::clamp(color.b,0.0f,1.0f) );
         alloc.construct( mem + x+y*row , copy );
     }
 
