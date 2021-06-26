@@ -7,6 +7,8 @@
 #include "Material.h"
 #include "Ray.h"
 #include "Intersection.h"
+#include "Camera.h"
+#include "Canvas.h"
 
 class World
 {
@@ -36,6 +38,6 @@ private:
     std::vector<Light *> lights;
 };
 
-
+Canvas render( const Camera& cam , const World &world );
 
 #endif //RAY_TRACER_WORLD_H

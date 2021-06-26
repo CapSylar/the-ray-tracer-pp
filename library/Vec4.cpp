@@ -5,7 +5,6 @@
 #include "Vec4.h"
 #include "utilities.h"
 
-
 Vec4 operator+ ( const Vec4 &lhs , const Vec4 &rhs )
 {
     return Vec4(lhs.x + rhs.x,lhs.y+rhs.y,lhs.z+rhs.z,lhs.w+rhs.w);

@@ -41,10 +41,38 @@ Vec4 operator * ( const Mat4 &lhs , const Vec4 &rhs )
     return Vec4(x,y,z,w);
 }
 
+std::ostream& operator<< ( std::ostream& os , const Mat4 &rhs )
+{
+    os << "[" << rhs[0] << " " << rhs[1] << " " << rhs[2] << " " << rhs[3] << "]\n";
+    os << "[" << rhs[4] << " " << rhs[5] << " " << rhs[6] << " " << rhs[7] << "]\n";
+    os << "[" << rhs[8] << " " << rhs[9] << " " << rhs[10] << " " << rhs[11] << "]\n";
+    os << "[" << rhs[12] << " " << rhs[13] << " " << rhs[14] << " " << rhs[15] << "]";
+
+    return os;
+}
+
 
 Mat4 Mat4::IDENTITY()
 {
     return Mat4({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) ;
+}
+
+Mat4 Mat4::view( Point from , Point to , Vector up )
+{
+    Vector forward = to - from ;
+    forward.normalize();
+
+    up.normalize();
+    Vector left = Vector::cross( forward , up );
+    Vector true_up = Vector::cross ( left , forward );
+
+    Mat4 rotation_mat = { left.x , left.y , left.z , 0,
+                          true_up.x , true_up.y , true_up.z , 0,
+                          -forward.x , -forward.y , -forward.z , 0,
+                          0,0,0,1 };
+
+    return rotation_mat * getTranslation(-from.x,-from.y,-from.z);
+    // could do the last multiplication manually, but this function is very rarely called, maybe once per program per render
 }
 
 Mat4 Mat4::invert_copy() const
