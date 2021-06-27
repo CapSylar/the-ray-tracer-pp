@@ -19,16 +19,11 @@ public:
 
     Mat4 ( const Mat4 &ref ): m(ref.m) {} 
 
-    Mat4& operator = ( Mat4 &ref )
-    = default;
+    Mat4& operator = ( Mat4 &ref ) = default;
 
     Mat4( Mat4 &&ref ) noexcept : m(std::move(ref.m)) {}
 
-    Mat4& operator = ( Mat4 &&ref ) noexcept
-    {
-        m = std::move(ref.m);
-        return *this;
-    }
+    Mat4& operator = ( Mat4 &&ref ) noexcept ;
 
     float& operator[] ( int index )
     {
@@ -40,21 +35,8 @@ public:
         return m[index];
     }
 
-    Mat4& transpose()
-    {
-        *this = transpose_copy();
-        return *this;
-    }
-
-    Mat4 transpose_copy()
-    {
-        Mat4 temp;
-        for ( int row = 0 ; row < 4 ; ++row )
-            for ( int col = 0 ; col < 4 ; ++col )
-                temp[col*4 + row] = m[row*4 + col];
-
-        return temp;
-    }
+    Mat4& transpose() ;
+    Mat4 transpose_copy() ;
 
     Mat4& rotate_x( float r );
     Mat4& rotate_y( float r);

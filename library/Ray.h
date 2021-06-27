@@ -4,22 +4,13 @@
 #include "Vec4.h"
 #include "Mat4.h"
 
-struct Ray
+class Ray
 {
+public:
     Ray ( Point orig , Vector dir ): origin(orig) , direction(dir) {}
 
-    Point position( float t ) const
-    {
-        return origin + direction * t ;
-    }
-
-    void transform (const Mat4& trans_matrix )
-    {
-        // transform the ray by the matrix
-        origin = trans_matrix * origin ;
-        direction = trans_matrix * direction ;
-    }
-
+    Point position( float t ) const ;
+    void transform (const Mat4& trans_matrix );
     static Vector reflect ( const Vector &in , const Vector &normal );
 
     Point origin;
@@ -27,7 +18,6 @@ struct Ray
 };
 
 Vector reflect ( const Vector &in , const Vector &normal );
-
 std::ostream& operator << ( std::ostream& os , const Ray &rhs );
 
 

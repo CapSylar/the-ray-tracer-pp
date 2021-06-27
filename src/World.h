@@ -15,9 +15,9 @@ class World
 public:
     World() = default;
 
-    void add ( Sphere &sphere )
+    void add ( Shape &shape )
     {
-        objects.push_back(&sphere);
+        objects.push_back(&shape);
     }
 
     void add ( Light &light )
@@ -33,7 +33,7 @@ public:
     std::vector<Intersection> intersect ( const Ray &ray ) const ;
 
 private:
-    std::vector<Sphere *> objects;
+    std::vector<Shape *> objects;
     //TODO: for now we only have a single light source, to extend this in the future
     std::vector<Light *> lights;
 };

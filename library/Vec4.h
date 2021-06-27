@@ -16,49 +16,15 @@ public:
 
     explicit Vec4 ( float xx = 0 , float yy = 0 , float zz = 0 , float ww = 0 ) : x(xx) , y(yy) , z(zz) , w(ww) {}
 
-    static Vec4 getPoint(float x = 0 , float y = 0 , float z = 0 )
-    {
-        return Vec4(x,y,z,1);
-    }
+    static Vec4 getPoint(float x = 0 , float y = 0 , float z = 0 );
+    static Vec4 getVector(float x = 0 , float y = 0 , float z = 0 );
 
-    static Vec4 getVector(float x = 0 , float y = 0 , float z = 0 )
-    {
-        return Vec4(x ,y , z , 0 );
-    }
+    Vec4 operator-() const ;
+    float magnitude() const ;
+    Vec4 normalize_copy() const ;
 
-    Vec4 operator-() const
-    {
-        // return a new negated copy
-        return Vec4(-x,-y,-z,w);
-    }
-
-    float magnitude() const
-    {
-        return sqrt(x*x+y*y+z*z);
-    }
-
-    Vec4& normalize()
-    {
-        const auto mag = magnitude();
-        x /= mag;
-        y /= mag;
-        z /= mag;
-
-        return *this;
-    }
-
-    Vec4 normalize_copy() const
-    {
-        return Vec4(x,y,z,w).normalize();
-    }
-
-    static Vec4 cross ( const Vec4& lhs , const Vec4& rhs )
-    {
-        // cross product between lhs and rhs
-        return Vec4( lhs.y * rhs.z - lhs.z * rhs.y,
-                     lhs.z * rhs.x - lhs.x * rhs.z,
-                     lhs.x * rhs.y - lhs.y * rhs.x);
-    }
+    Vec4& normalize() ;
+    static Vec4 cross ( const Vec4& lhs , const Vec4& rhs ) ;
 };
 
 Vec4 operator+ ( const Vec4 &lhs , const Vec4 &rhs );

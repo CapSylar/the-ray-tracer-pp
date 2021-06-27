@@ -14,6 +14,8 @@ struct Material
     float ambient,diffuse,specular,shininess;
 };
 
+bool operator == ( const Material &lhs , const Material &rhs ) ;
+
 struct Light
 {
     Color intensity;
@@ -21,6 +23,5 @@ struct Light
 
     Light( Color intensity , Point position ) : intensity(intensity) , position(position) {}
 };
-
 
 #endif //RAY_TRACER_MATERIAL_H

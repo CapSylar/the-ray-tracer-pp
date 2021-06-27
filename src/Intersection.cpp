@@ -1,6 +1,7 @@
 #include "Intersection.h"
-
 #include <algorithm>
+#include <optional>
+#include "Sphere.h"
 
 std::optional<Intersection> Intersection::get_hit(const std::vector<Intersection> &list)
 {
@@ -24,4 +25,6 @@ bool operator < ( const Intersection &lhs , const Intersection &rhs )
 std::ostream& operator << ( std::ostream& os , const Intersection &rhs )
 {
     os << "[" << rhs.t << " " << rhs.obj << "]" ;
+
+    return os;
 }

@@ -58,3 +58,48 @@ std::ostream& operator << ( std::ostream& os , const Vec4 &rhs )
 
     return os;
 }
+
+Vec4 Vec4::cross ( const Vec4& lhs , const Vec4& rhs )
+{
+    // cross product between lhs and rhs
+    return Vec4( lhs.y * rhs.z - lhs.z * rhs.y,
+                 lhs.z * rhs.x - lhs.x * rhs.z,
+                 lhs.x * rhs.y - lhs.y * rhs.x);
+}
+
+Vec4& Vec4::normalize()
+{
+    const auto mag = magnitude();
+    x /= mag;
+    y /= mag;
+    z /= mag;
+
+    return *this;
+}
+
+Vec4 Vec4::getPoint(float x, float y, float z)
+{
+    return Vec4(x,y,z,1);
+}
+
+Vec4 Vec4::getVector(float x , float y , float z)
+{
+    return Vec4(x ,y , z , 0 );
+}
+
+Vec4 Vec4::operator- () const
+{
+    // return a new negated copy
+    return Vec4(-x,-y,-z,w);
+}
+
+float Vec4::magnitude() const
+{
+    return sqrt(x*x+y*y+z*z);
+}
+
+Vec4 Vec4::normalize_copy() const
+{
+    return Vec4(x,y,z,w).normalize();
+}
+

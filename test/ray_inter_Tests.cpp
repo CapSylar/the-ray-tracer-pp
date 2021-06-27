@@ -7,6 +7,8 @@
 
 TEST_CASE("RAY TESTS")
 {
+    std::vector<Intersection> list;
+
     SECTION("testing ray creation")
     {
         Ray uut(Vec4::getPoint(1, 2, 3), Vec4::getVector(4, 5, 6));
@@ -30,7 +32,7 @@ TEST_CASE("RAY TESTS")
     {
         Ray r(Vec4::getPoint(0, 0, -5), Vec4::getVector(0, 0, 1));
         Sphere s;
-        auto list = s.intersect(r);
+        s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
         REQUIRE(list[0].t == 4);
@@ -42,7 +44,7 @@ TEST_CASE("RAY TESTS")
     {
         Ray r(Vec4::getPoint(0, 1, -5), Vec4::getVector(0, 0, 1));
         Sphere s;
-        auto list = s.intersect(r);
+        s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
         REQUIRE(list[0].t == 5);
@@ -53,7 +55,7 @@ TEST_CASE("RAY TESTS")
     {
         Ray r(Vec4::getPoint(0, 2, -5), Vec4::getVector(0, 0, 1));
         Sphere s;
-        auto list = s.intersect(r);
+        s.intersect(r , list );
 
         REQUIRE(list.empty());
     }
@@ -62,7 +64,7 @@ TEST_CASE("RAY TESTS")
     {
         Ray r(Vec4::getPoint(0, 0, 0), Vec4::getVector(0, 0, 1));
         Sphere s;
-        auto list = s.intersect(r);
+        s.intersect(r , list);
 
         REQUIRE(list.size() == 2);
         REQUIRE(list[0].t == -1);
@@ -74,7 +76,7 @@ TEST_CASE("RAY TESTS")
     {
         Ray r(Vec4::getPoint(0, 0, 5), Vec4::getVector(0, 0, 1));
         Sphere s;
-        auto list = s.intersect(r);
+        s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
         REQUIRE(list[0].t == -6);

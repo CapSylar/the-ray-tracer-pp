@@ -256,3 +256,29 @@ Mat4 &Mat4::shear(float Xy , float Xz , float Yx , float Yz , float Zx , float Z
     *this = shear * *this;
     return *this;
 }
+
+Mat4 Mat4::transpose_copy()
+{
+    Mat4 temp;
+    for ( int row = 0 ; row < 4 ; ++row )
+    {
+        for ( int col = 0 ; col < 4 ; ++col )
+        {
+            temp[col*4 + row] = m[row*4 + col];
+        }
+    }
+
+    return temp;
+}
+
+Mat4& Mat4::transpose()
+{
+    *this = transpose_copy();
+    return *this;
+}
+
+Mat4& Mat4::operator= ( Mat4 &&ref ) noexcept
+{
+    m = std::move(ref.m);
+    return *this;
+}

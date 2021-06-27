@@ -104,6 +104,4 @@ TEST_CASE("testing for shadows")
         Point p (-2 , 2 , -2);
         REQUIRE( Lighting::is_shadowed( w , p ) == false );
     }
-
-
 }

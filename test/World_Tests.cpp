@@ -79,7 +79,4 @@ TEST_CASE("intersecting the world with some shadow calculation")
         auto color = Lighting::color_at( world , ray , true );
         REQUIRE( color == Color(0.1,0.1,0.1)) ;
     }
-
-
-
 }
