@@ -47,7 +47,7 @@ public:
     {
         // first calculate the offsets
         float offset_x = (px + 0.5f) * pixel_size; // 0.5 to put it at the center of the pixel
-        float offset_y = (py+ 0.5f) * pixel_size;
+        float offset_y = (py + 0.5f) * pixel_size;
 
         float world_x = half_width - offset_x;
         float world_y = half_height - offset_y;

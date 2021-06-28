@@ -11,7 +11,7 @@
 class Canvas
 {
 public:
-    Canvas ( int r , int c ) : row(r) , col(c)
+    Canvas ( int c , int r ) : row(r) , col(c)
     {
         mem = alloc.allocate( row * col );
     }
@@ -21,13 +21,13 @@ public:
         // check bounds
         if ( x < 0 || x >= col || y < 0 || y >= row )
         {
-            fprintf( stderr , "ignored write\n") ;
+            fprintf( stderr , "ignored write at x = %d and y = %d\n" , x , y ) ;
             return;
         }
 
         // clamp the color between 0 and 1
         Color copy ( std::clamp(color.r,0.0f,1.0f) , std::clamp(color.g,0.0f,1.0f) , std::clamp(color.b,0.0f,1.0f) );
-        alloc.construct( mem + x+y*row , copy );
+        alloc.construct( mem + x+y*col , copy );
     }
 
     void save ( const std::string& filename )

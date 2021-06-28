@@ -1,6 +1,9 @@
 #include "catch2/catch.hpp"
 #include "Sphere.h"
 #include "Ray.h"
+#include "Plane.h"
+#include "Intersection.h"
+#include "LightComputations.h"
 
 TEST_CASE("normal tests")
 {
@@ -62,4 +65,15 @@ TEST_CASE("testing reflection of vectors")
         auto r = Ray::reflect( v , n );
         REQUIRE( r == Vec4::getVector(1,0,0));
     }
+}
+
+TEST_CASE("precomputing the reflection vector")
+{
+    Plane p;
+    float sqrt2over2 = sqrtf(2) / 2;
+    Ray ray( Vec4::getPoint(0,1,-1) , Vec4::getVector(0,-sqrt2over2 , sqrt2over2 )) ;
+    Intersection inter(sqrtf(2) , p );
+
+    LightComputations comps ( inter , ray );
+    REQUIRE( comps.reflected == Vec4::getVector( 0 , sqrt2over2 , sqrt2over2 ) );
 }

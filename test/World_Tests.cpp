@@ -44,7 +44,7 @@ TEST_CASE ("intersecting the world")
         w.add( default_half );
 
         Ray ray( Vec4::getPoint(0,0,-5) , Vec4::getVector(0,1,0) );
-        REQUIRE(Color(0,0,0) == Lighting::color_at( w , ray ));
+        REQUIRE(Color(0,0,0) == Lighting::color_at(w, ray, false, 0));
     }
 
     SECTION("the color when a ray hits")
@@ -55,7 +55,7 @@ TEST_CASE ("intersecting the world")
         w.add( default_half );
 
         Ray ray( Vec4::getPoint(0,0,-5) , Vec4::getVector(0,0,1) );
-        auto c = Lighting::color_at( w , ray );
+        auto c = Lighting::color_at(w, ray, false, 0);
         REQUIRE( c == Color(0.380661,0.475827,0.285496) );
     }
 }
@@ -76,7 +76,7 @@ TEST_CASE("intersecting the world with some shadow calculation")
         Ray ray( Vec4::getPoint(0,0,5) , Vec4::getVector(0,0,1) );
         Intersection inter( 4 , sphere2 );
 
-        auto color = Lighting::color_at( world , ray , true );
+        auto color = Lighting::color_at(world, ray, true, 0);
         REQUIRE( color == Color(0.1,0.1,0.1)) ;
     }
 }

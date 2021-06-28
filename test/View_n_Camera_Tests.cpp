@@ -73,7 +73,7 @@ TEST_CASE("testing how the camera constructs the rays")
                                                  Vec4::getPoint(0,0,0) , Vec4::getVector(0,1,0)) );
 
         auto ray = c.getRayForPixel(5,5);
-        auto color = Lighting::color_at( w , ray );
+        auto color = Lighting::color_at(w, ray, false, 0);
         REQUIRE(color == Color(0.380661 , 0.475827 , 0.285496 ) );
     }
 }

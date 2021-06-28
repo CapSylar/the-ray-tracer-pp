@@ -25,8 +25,8 @@ Canvas render( const Camera& cam , const World &world )
     {
         for ( int x = 0 ; x < cam.getHSize() ; ++x )
         {
-            auto ray = cam.getRayForPixel(x,y);
-            Color c = Lighting::color_at( world,  ray , true  );
+            auto ray = cam.getRayForPixel( x , y );
+            Color c = Lighting::color_at(world, ray, true, 4 );
             canvas.write( c , x , y );
         }
     }
