@@ -41,6 +41,7 @@ public:
         for ( int i = 0 ; i < col * row ; ++i )
         {
             const auto &color = mem[i];
+
             file << int (color.r * 255)  << " " << int (color.g * 255) <<
             " " << int (color.b * 255) << '\n' ;
         }

@@ -18,16 +18,40 @@ namespace Lighting
             return Color(0, 0, 0);
 
         // compute the necessary values for Phong shading
-        LightComputations comps ( first_inter.value() , ray );
+        LightComputations comps ( first_inter.value() , ray, list  );
 
+        return shade_hit( world , comps , calc_shadow , remaining );
+    }
+
+
+    Color shade_hit ( const World &world , const LightComputations &comps , bool calc_shadow , int remaining )
+    {
         bool in_shadow = false;
         if ( calc_shadow )
-            in_shadow = Lighting::is_shadowed( world , comps.adjusted );
+            in_shadow = Lighting::is_shadowed( world , comps.over_point );
 
-        Color surface_color = get_surface_color( world.getLight() , comps , in_shadow);
+        const auto &mat = comps.object.material ;
+
+
+        if ( mat.transparency > 0 ) // use Schlick's approx in this case
+        {
+            int x = 0;
+        }
+
+            Color surface_color = get_surface_color( world.getLight() , comps , in_shadow);
         Color reflected_color = get_reflected_color(world, comps, remaining );
+        Color refracted_color = get_refracted_color( world , comps , remaining );
 
-        return surface_color + reflected_color;
+//        const auto &mat = comps.object.material ;
+        if ( mat.reflectance > 0 && mat.transparency > 0 ) // use Schlick's approx in this case
+        {
+            float factor = get_schlick_factor( comps );
+            return surface_color +  (reflected_color * factor) + (refracted_color * ( 1 - factor )) ;
+        }
+        else
+        {
+            return surface_color + reflected_color + refracted_color ;
+        }
     }
 
     Color get_surface_color ( const Light &light , const LightComputations &comps , bool in_shadow )
@@ -50,8 +74,6 @@ namespace Lighting
         Color diffuse = base_color * comps.object.material.diffuse * cosine ;
 
         Vector reflectv = Ray::reflect( -lightv , comps.normal );
-
-//        std::cout << "reflectv" << reflectv.magnitude() << "comps.eye" << comps.eye.magnitude() << '\n' ;
 
         float reflect_dot_eye = reflectv * comps.eye ;
 
@@ -89,8 +111,52 @@ namespace Lighting
             // calculate the reflected ray using the direction included in the LightComputations struct
             // TODO: it would maybe better to not compute reflected inside comps since it may not be used
             // defer its creation until this point where we are sure that we would need it
-            Ray reflected_ray( comps.adjusted , comps.reflected );
-            return color_at(world, reflected_ray, false, remaining ) * comps.object.material.reflectance ;
+            Ray reflected_ray(comps.over_point , comps.reflected );
+            return color_at(world, reflected_ray, true , remaining ) * comps.object.material.reflectance ;
         }
+    }
+
+    Color get_refracted_color(const World &world, const LightComputations &comps, int remaining)
+    {
+        if ( remaining-- <= 0 || comps.object.material.transparency == 0 )
+            return Color(0,0,0); // black
+
+        float n_ratio = comps.n1 / comps.n2 ;
+        float cos_i = comps.eye * comps.normal ; // both are unit vectors
+
+        // use snell's law
+        float sin2_t = n_ratio * n_ratio * (1 - cos_i * cos_i ); // trig identity
+
+        if (sin2_t > 1 ) // total internal reflection, not the job of this function
+            return Color(0,0,0); // black
+
+        float cos_t = sqrtf(1 - sin2_t) ;
+        Vector direction =  comps.normal * ( n_ratio * cos_i - cos_t ) -comps.eye * n_ratio ;
+
+        // create the refracted ray
+        Ray refracted ( comps.under_point , direction );
+
+        return color_at( world , refracted , true , remaining );
+    }
+
+    float get_schlick_factor(const LightComputations &comps)
+    {
+        // find the cosine between the angle between the eye and normal vectors
+        float cos = comps.eye * comps.normal ;
+
+        //total internal reflection can only occur when n1 > n2
+        if ( comps.n1 > comps.n2 ) // check for internal reflection
+        {
+            float n = comps.n1 / comps.n2;
+            float sin2_t =  n*n * ( 1 - cos*cos ) ;
+            if (  sin2_t > 1 )
+                return 1; // 1 = all reflections not refractions
+            cos = sqrtf( 1 - sin2_t ); // use this instead of previous value
+        }
+
+        // use schlick's formula
+        float r0 = (comps.n1 - comps.n2) / ( comps.n1 + comps.n2 )  ;
+        r0 *= r0;
+        return r0 + ( 1 - r0 ) * powf( 1 - cos , 5 );
     }
 }

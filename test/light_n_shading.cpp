@@ -24,6 +24,15 @@ TEST_CASE( "testing lights n materials" )
         REQUIRE(mat.diffuse == 0.9f);
         REQUIRE(mat.ambient == 0.1f);
         REQUIRE(mat.reflectance == 0.0f);
+        REQUIRE(mat.transparency == 0.0f );
+        REQUIRE( mat.refractive_index == 1.0f );
+    }
+
+    SECTION("testing the glass material")
+    {
+        Material mat = Material::getGlassMaterial();
+        REQUIRE(mat.transparency == 1);
+        REQUIRE(mat.refractive_index == 1.5f);
     }
 }
 

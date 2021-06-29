@@ -7,6 +7,13 @@ bool operator == ( const Material &lhs , const Material &rhs )
             lhs.ambient == rhs.ambient &&
             lhs.shininess == rhs.shininess &&
             lhs.reflectance == rhs.reflectance &&
+            lhs.refractive_index == rhs.refractive_index &&
+            lhs.transparency == rhs.transparency &&
             lhs.color == rhs.color );
 }
 
+Material Material::getGlassMaterial()
+{
+    // return a glassy material with refractive index of 1.5
+    return Material( Color() , 0.1 , 0.9 , 0.9 , 200 , 0 , 1 , 1.5f  );
+}

@@ -11,15 +11,20 @@ class Ray;
 struct LightComputations
 {
     LightComputations( const Intersection& inter , const Ray &ray ) ;
+    LightComputations( const Intersection& inter , const Ray &ray , const std::vector<Intersection> &list );
     LightComputations ( const Shape &Object , Vector position , Vector Normal , Vector Eye ) : object(Object) ,
-            surface_point(position) , normal(Normal) , eye(Eye) {}
+            surface_point(position) , normal(Normal) , eye(Eye) , n1(1) , n2(1)  {}
 
     const Shape &object;
     Point surface_point;
-    Vector normal;
-    Vector eye;
-    Point adjusted;
+    Vector normal; // normal of the surface pointing away from the surface
+    Vector eye; // inverse of the incident ray direction
     Vector reflected;
+    Point over_point; // a point situated ~ surface_point but moved slightly so that it is over the surface
+    Point under_point; // a point situated ~ surface_point but moved slightly so that it is underneath the surface
+
+    // for refraction
+    float n1, n2;
 };
 
 
