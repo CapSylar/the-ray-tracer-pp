@@ -32,13 +32,12 @@ namespace Lighting
 
         const auto &mat = comps.object.material ;
 
-
         if ( mat.transparency > 0 ) // use Schlick's approx in this case
         {
             int x = 0;
         }
 
-            Color surface_color = get_surface_color( world.getLight() , comps , in_shadow);
+        Color surface_color = get_surface_color( world.getLight() , comps , in_shadow);
         Color reflected_color = get_reflected_color(world, comps, remaining );
         Color refracted_color = get_refracted_color( world , comps , remaining );
 

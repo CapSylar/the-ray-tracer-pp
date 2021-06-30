@@ -4,6 +4,8 @@
 #include "Mat4.h"
 #include "Intersection.h"
 #include "Plane.h"
+#include "Vec4.h"
+#include "Ray.h"
 
 TEST_CASE("Sphere intersection tests")
 {

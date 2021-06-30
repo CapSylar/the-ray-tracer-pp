@@ -8,7 +8,7 @@
 
 LightComputations::LightComputations(const Intersection &inter, const Ray &ray) :
         object(*inter.obj) , surface_point( ray.position(inter.t)) , normal( inter.obj->normal_at(surface_point)) , eye(-ray.direction.normalize_copy()) ,
-        over_point(surface_point + normal * eps * 5 ) , under_point(surface_point - normal * eps * 5 ) ,reflected(Ray::reflect(ray.direction , normal ) ) , n1(1) , n2(1)
+        over_point(surface_point + normal * eps * 5 ) , under_point(surface_point - normal * eps * 1000000 ) ,reflected(Ray::reflect(ray.direction , normal ) ) , n1(1) , n2(1)
 {
     // adjust the surface_point slightly to avoid "acne" , aka where an object shadows itself due to imprecision of floating point numbers
     // search for ray tracing acne

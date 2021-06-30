@@ -4,10 +4,8 @@
 #include <vector>
 #include <optional>
 
-#include "Ray.h"
-//#include "Material.h"
 #include "Shape.h"
-
+class Ray;
 class Intersection;
 
 class Sphere : public Shape

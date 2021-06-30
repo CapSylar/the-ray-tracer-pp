@@ -1,5 +1,6 @@
 #include "Sphere.h"
 #include "Intersection.h"
+#include "Ray.h"
 
 void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &list) const
 {
