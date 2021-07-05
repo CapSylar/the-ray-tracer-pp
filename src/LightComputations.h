@@ -19,9 +19,9 @@ struct LightComputations
     Point surface_point;
     Vector normal; // normal of the surface pointing away from the surface
     Vector eye; // inverse of the incident ray direction
-    Vector reflected;
     Point over_point; // a point situated ~ surface_point but moved slightly so that it is over the surface
     Point under_point; // a point situated ~ surface_point but moved slightly so that it is underneath the surface
+    Vector reflected;
 
     // for refraction
     float n1, n2;

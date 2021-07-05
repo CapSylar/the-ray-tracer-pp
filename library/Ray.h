@@ -9,7 +9,7 @@ class Ray
 public:
     Ray ( Point orig , Vector dir ): origin(orig) , direction(dir) {}
 
-    Point position( float t ) const ;
+    [[nodiscard]] Point position( float t ) const ;
     void transform (const Mat4& trans_matrix );
     static Vector reflect ( const Vector &in , const Vector &normal );
 

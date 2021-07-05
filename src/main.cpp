@@ -6,7 +6,7 @@
 #include "Material.h"
 #include "World.h"
 #include "Cube.h"
-
+#include "Cylinder.h"
 
 int main ()
 {
@@ -34,18 +34,18 @@ int main ()
     behind_wall.material.specular = 0.4f;
     behind_wall.material.shininess = 300 ;
 
-    Light light( Color(1,1,1) , Vec4::getPoint(0,2.5f,1.75f));
+    Light light( Color(1,1,1) , Vec4::getPoint(0,2.5f,1 ));
 
     // objects
 
     Sphere glass_ball ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).translate(-0.5f,0.5f,1.4f) , Material::getGlassMaterial() );
-    glass_ball.material.color = Color(0.4f ,0.4f,0.4f);
+    glass_ball.material.color = Color(0.2f ,0.2f,0.2f);
     glass_ball.material.reflectance = 1 ;
     glass_ball.material.diffuse = 0.4f;
     glass_ball.material.specular = 1;
     glass_ball.material.shininess = 300 ;
 
-//    Sphere air_ball ( Mat4::IDENTITY().scale(0.25f,0.25f,0.25f).translate(-0.5f,0.5f,2) , Material(Color(1,0,1)) );
+    Sphere air_ball ( Mat4::IDENTITY().scale(0.25f,0.25f,0.25f).translate(-0.5f,0.5f,1.4f) , Material(Color(0,1,1)) );
 
     Cube mirror_ball ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).rotate_y(M_PI/4).rotate_z(M_PI/5).translate(0.5f,1 ,2)  );
     mirror_ball.material.reflectance = 1;
@@ -55,6 +55,11 @@ int main ()
     Plane hello ( Mat4::IDENTITY().rotate_x(-M_PI/2).translate(0,0,1) , Material::getGlassMaterial() );
     hello.material.color = Color(0,1 ,0.1f);
 
+    Cylinder cilly ( -2 , 2 , true , Mat4::IDENTITY().scale(0.25f,0.25f,0.25f).rotate_x(M_PI/3).translate(0,1,1.5f));
+    cilly.material.reflectance = 1;
+    cilly.material.color = Color(0.1f,0.1f,0.1f) ;
+
+
     cornell_box.add(light);
     cornell_box.add( floor );
     cornell_box.add( right_wall );
@@ -63,9 +68,11 @@ int main ()
     cornell_box.add( behind_wall );
     cornell_box.add( ceiling ) ;
 
-    cornell_box.add( glass_ball );
-    cornell_box.add ( mirror_ball );
+//    cornell_box.add( glass_ball );
+//    cornell_box.add ( mirror_ball );
 //    cornell_box.add( air_ball );
+
+    cornell_box.add(cilly);
 
     Point from = Vec4::getPoint(0,1,-1);
     Point to = Vec4::getPoint(0,1,1);

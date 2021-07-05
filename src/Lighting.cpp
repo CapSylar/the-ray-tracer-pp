@@ -33,18 +33,11 @@ namespace Lighting
         if ( calc_shadow )
             in_shadow = Lighting::is_shadowed( world , comps.over_point );
 
-        const auto &mat = comps.object.material ;
-
-        if ( mat.reflectance > 0 ) // use Schlick's approx in this case
-        {
-            int x = 0;
-        }
-
         Color surface_color = get_surface_color( world.getLight() , comps , in_shadow);
         Color reflected_color = get_reflected_color(world, comps, remaining );
         Color refracted_color = get_refracted_color( world , comps , remaining );
 
-//        const auto &mat = comps.object.material ;
+        const auto &mat = comps.object.material ;
         if ( mat.reflectance > 0 && mat.transparency > 0 ) // use Schlick's approx in this case
         {
             float factor = get_schlick_factor( comps );
@@ -115,12 +108,12 @@ namespace Lighting
             // defer its creation until this point where we are sure that we would need it
             Ray reflected_ray(comps.over_point , comps.reflected );
 
-#ifndef NDEBUG
-            const auto list = world.intersect( reflected_ray );
-            const auto closest = Intersection::get_hit(list) ;
-
-            assert( closest.has_value() && (closest.value().obj != &(comps.object)) ); // test for self intersection
-#endif
+//#ifndef NDEBUG
+//            const auto list = world.intersect( reflected_ray );
+//            const auto closest = Intersection::get_hit(list) ;
+//
+//            assert( closest.has_value() && (closest.value().obj != &(comps.object)) ); // test for self intersection
+//#endif
 
             return color_at(world, reflected_ray, true , remaining ) * comps.object.material.reflectance ;
         }
