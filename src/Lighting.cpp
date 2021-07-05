@@ -1,18 +1,21 @@
-#include "tracing.h"
+#include "Lighting.h"
 #include "utilities.h"
 #include "LightComputations.h"
 #include "Color.h"
 #include "World.h"
+
+//#define NDEBUG
+#include <cassert>
 
 namespace Lighting
 {
     Color color_at(const World &world, const Ray &ray, bool calc_shadow, int remaining)
     {
         // get intersection list by intersection the ray in the world
-        auto list = world.intersect(ray);
+        const auto list = world.intersect(ray);
 
         // get the first intersection
-        auto first_inter = Intersection::get_hit(list);
+        const auto first_inter = Intersection::get_hit(list);
 
         if (!first_inter.has_value()) // if no intersection return black
             return Color(0, 0, 0);
@@ -32,7 +35,7 @@ namespace Lighting
 
         const auto &mat = comps.object.material ;
 
-        if ( mat.transparency > 0 ) // use Schlick's approx in this case
+        if ( mat.reflectance > 0 ) // use Schlick's approx in this case
         {
             int x = 0;
         }
@@ -111,6 +114,14 @@ namespace Lighting
             // TODO: it would maybe better to not compute reflected inside comps since it may not be used
             // defer its creation until this point where we are sure that we would need it
             Ray reflected_ray(comps.over_point , comps.reflected );
+
+#ifndef NDEBUG
+            const auto list = world.intersect( reflected_ray );
+            const auto closest = Intersection::get_hit(list) ;
+
+            assert( closest.has_value() && (closest.value().obj != &(comps.object)) ); // test for self intersection
+#endif
+
             return color_at(world, reflected_ray, true , remaining ) * comps.object.material.reflectance ;
         }
     }

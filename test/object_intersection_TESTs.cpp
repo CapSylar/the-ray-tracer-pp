@@ -9,18 +9,18 @@
 
 TEST_CASE("Sphere intersection tests")
 {
-    Sphere s;
     Ray ray( Vec4::getPoint(0,0,-5) , Vec4::getVector(0,0,1));
     std::vector<Intersection> list;
 
     SECTION("test sphere default transformation")
     {
-        REQUIRE( s.transform == Mat4::IDENTITY() );
+        Sphere s;
+        REQUIRE(s.inverse_trans == Mat4::IDENTITY() );
     }
 
     SECTION("intersecting a scaled sphere with a ray")
     {
-        s.transform.scale(2,2,2);
+        Sphere s( Mat4::IDENTITY().scale(2,2,2));
         s.intersect(ray , list );
 
         REQUIRE(list.size() == 2);
@@ -30,7 +30,7 @@ TEST_CASE("Sphere intersection tests")
 
     SECTION("intersecting a translated sphere with a ray")
     {
-        s.transform.scale(5,0,0 );
+        Sphere s ( Mat4::IDENTITY().scale(5,0,0)) ;
         s.intersect(ray , list );
 
         REQUIRE(list.empty());
@@ -42,7 +42,7 @@ TEST_CASE("Plane Tests")
     SECTION("Plane creation test")
     {
         Plane plane;
-        REQUIRE( plane.transform == Mat4::IDENTITY() );
+        REQUIRE(plane.inverse_trans == Mat4::IDENTITY() );
         REQUIRE( plane.material == Material() );
     }
 

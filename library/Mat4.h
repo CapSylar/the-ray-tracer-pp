@@ -36,7 +36,7 @@ public:
     }
 
     Mat4& transpose() ;
-    Mat4 transpose_copy() ;
+    Mat4 transpose_copy() const;
 
     Mat4& rotate_x( float r );
     Mat4& rotate_y( float r);

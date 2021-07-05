@@ -19,7 +19,7 @@ Point Ray::position( float t ) const
 
 void Ray::transform (const Mat4& trans_matrix )
 {
-    // transform the ray by the matrix
+    // inverse_trans the ray by the matrix
     origin = trans_matrix * origin ;
     direction = trans_matrix * direction ;
 }

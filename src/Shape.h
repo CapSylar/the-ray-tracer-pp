@@ -11,16 +11,16 @@ class Shape
 {
 public:
     Material material;
-    Mat4 transform;
+    Mat4 inverse_trans;
 
-    explicit Shape ( Mat4 trans , Material mat ) : material(mat) , transform(trans) {}
+    explicit Shape ( Mat4 trans , Material mat ) : material(mat) , inverse_trans(trans.invert()) {}
 
     void intersect ( const Ray &ray , std::vector<Intersection>& list ) const ;
-    Vector normal_at ( const Point &surface_point ) const ;
+    [[nodiscard]] Vector normal_at ( const Point &surface_point ) const ;
 
 protected:
     virtual void local_intersect ( const Ray &ray , std::vector<Intersection> &list ) const = 0;
-    virtual Vector local_normal_at ( const Point &point ) const = 0 ;
+    [[nodiscard]] virtual Vector local_normal_at ( const Point &point ) const = 0 ;
 };
 
 

@@ -1,9 +1,12 @@
+#include <chrono>
+
 #include "Ray.h"
 #include "Sphere.h"
 #include "Plane.h"
 #include "Material.h"
 #include "World.h"
 #include "Cube.h"
+
 
 int main ()
 {
@@ -35,24 +38,22 @@ int main ()
 
     // objects
 
-    Sphere glass_ball ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).translate(-0.5f,0.5f,2) , Material::getGlassMaterial() );
+    Sphere glass_ball ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).translate(-0.5f,0.5f,1.4f) , Material::getGlassMaterial() );
     glass_ball.material.color = Color(0.4f ,0.4f,0.4f);
     glass_ball.material.reflectance = 1 ;
     glass_ball.material.diffuse = 0.4f;
     glass_ball.material.specular = 1;
     glass_ball.material.shininess = 300 ;
 
-    Sphere air_ball ( Mat4::IDENTITY().scale(0.25f,0.25f,0.25f).translate(-0.5f,0.5f,2) , Material(Color(1,0,1)) );
+//    Sphere air_ball ( Mat4::IDENTITY().scale(0.25f,0.25f,0.25f).translate(-0.5f,0.5f,2) , Material(Color(1,0,1)) );
 
-    Cube mirror_ball ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).rotate_y(M_PI/4).rotate_z(M_PI/4).translate(-0.2f,0.9f ,2)  );
-//    mirror_ball.material.reflectance = 1;
-//    mirror_ball.material.refractive_index = 1.5f;
-////    mirror_ball.material.transparency = 1;
-
+    Cube mirror_ball ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).rotate_y(M_PI/4).rotate_z(M_PI/5).translate(0.5f,1 ,2)  );
+    mirror_ball.material.reflectance = 1;
+    mirror_ball.material.refractive_index = 1.5f;
+    mirror_ball.material.transparency = 1;
 
     Plane hello ( Mat4::IDENTITY().rotate_x(-M_PI/2).translate(0,0,1) , Material::getGlassMaterial() );
     hello.material.color = Color(0,1 ,0.1f);
-
 
     cornell_box.add(light);
     cornell_box.add( floor );
@@ -62,7 +63,7 @@ int main ()
     cornell_box.add( behind_wall );
     cornell_box.add( ceiling ) ;
 
-//    cornell_box.add( glass_ball );
+    cornell_box.add( glass_ball );
     cornell_box.add ( mirror_ball );
 //    cornell_box.add( air_ball );
 
@@ -70,9 +71,17 @@ int main ()
     Point to = Vec4::getPoint(0,1,1);
     Vector up = Vec4::getVector(0,1,0);
 
-    Camera cam ( 1920/5 , 1080/5 , M_PI/2, Mat4::view(from , to , up ) );
+    // render the frame
+    auto begin = std::chrono::steady_clock::now();
+
+    Camera cam ( 1920 , 1080 , M_PI/2, Mat4::view(from , to , up ) );
     auto canvas = render( cam , cornell_box );
+
+    auto end = std::chrono::steady_clock::now();
+
     canvas.save("test_image.ppm");
+
+    std::cout << "Render time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << std::endl;
 
     return 0;
 }

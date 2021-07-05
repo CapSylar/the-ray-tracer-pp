@@ -1,7 +1,7 @@
 #include "World.h"
 #include "Camera.h"
 #include "Canvas.h"
-#include "tracing.h"
+#include "Lighting.h"
 
 std::vector<Intersection> World::intersect(const Ray &ray) const
 {

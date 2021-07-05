@@ -7,23 +7,23 @@
 class Camera
 {
     int h_size , v_size ;
-    float fov ; // horizontal size, vertical size , field of view
-    float half_width , half_height , pixel_size ; // used to transform the rays
-    Mat4 view; // default matrix is the identity matrix
+    float fov ; // horizontal size, vertical size , field of inverse_view
+    float half_width , half_height , pixel_size ; // used to inverse_trans the rays
+    Mat4 inverse_view; // default matrix is the identity matrix
 
 public:
 
-    int getHSize() const
+    [[nodiscard]] int getHSize() const
     {
         return h_size;
     }
 
-    int getVSize() const
+    [[nodiscard]] int getVSize() const
     {
         return v_size;
     }
 
-    Camera ( int h , int v , float field , Mat4 trans = Mat4::IDENTITY() ) : h_size(h) , v_size(v) , fov(field) , view(trans)
+    Camera ( int h , int v , float field , Mat4 trans = Mat4::IDENTITY() ) : h_size(h) , v_size(v) , fov(field) , inverse_view(trans.invert())
     {
         float half_view = tanf( fov/2 );
         float aspect_ratio = h_size / ( float ) v_size ;
@@ -43,7 +43,7 @@ public:
     }
 
 
-    Ray getRayForPixel( float px , float py ) const
+    [[nodiscard]] Ray getRayForPixel( float px , float py ) const
     {
         // first calculate the offsets
         float offset_x = (px + 0.5f) * pixel_size; // 0.5 to put it at the center of the pixel
@@ -52,8 +52,8 @@ public:
         float world_x = half_width - offset_x;
         float world_y = half_height - offset_y;
 
-        Point pixel = view.invert_copy() * Vec4::getPoint(world_x,world_y,-1); // TODO: invert_copy every time no no!! fine for now
-        Point origin = view.invert_copy() * Vec4::getPoint(0,0,0);
+        Point pixel = inverse_view * Vec4::getPoint(world_x, world_y, -1); // TODO: invert_copy every time no no!! fine for now
+        Point origin = inverse_view * Vec4::getPoint(0, 0, 0);
 
         Vector direction = pixel - origin;
         return Ray( origin , direction );

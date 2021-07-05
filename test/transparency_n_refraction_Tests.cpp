@@ -4,7 +4,7 @@
 #include "Ray.h"
 #include "Intersection.h"
 #include "LightComputations.h"
-#include "tracing.h"
+#include "Lighting.h"
 #include "World.h"
 #include "utilities.h"
 
@@ -78,8 +78,7 @@ TEST_CASE("testing refraction")
     World w;
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
     Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half;
-    default_half.transform.scale(0.5,0.5,0.5);
+    Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
     w.add(default_unit);
@@ -157,7 +156,7 @@ TEST_CASE("testing schlick's approximation")
 //        Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
 //        Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
 //        Sphere default_half;
-//        default_half.transform.scale(0.5,0.5,0.5);
+//        default_half.inverse_trans.scale(0.5,0.5,0.5);
 //
 //        w.add(light);
 //        w.add(default_unit);

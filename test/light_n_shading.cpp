@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include "Material.h"
-#include "tracing.h"
+#include "Lighting.h"
 #include "World.h"
 #include "LightComputations.h"
 #include "Intersection.h"
@@ -99,8 +99,7 @@ TEST_CASE("testing for shadows")
     World w;
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
     Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half;
-    default_half.transform.scale(0.5,0.5,0.5);
+    Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
     w.add(default_unit);
@@ -137,8 +136,7 @@ TEST_CASE("testing lighting with reflections ON")
     World w;
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
     Sphere default_unit(  Mat4::IDENTITY() ,  Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half;
-    default_half.transform.scale(0.5,0.5,0.5);
+    Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
     w.add(default_half);

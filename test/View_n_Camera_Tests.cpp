@@ -5,9 +5,9 @@
 #include "Sphere.h"
 #include "Material.h"
 #include "World.h"
-#include "tracing.h"
+#include "Lighting.h"
 
-TEST_CASE("testing the view transformation matrix")
+TEST_CASE("testing the inverse_view transformation matrix")
 {
     SECTION("the transformation matrix for the default orientation")
     {
@@ -19,7 +19,7 @@ TEST_CASE("testing the view transformation matrix")
         REQUIRE( view == Mat4::IDENTITY() );
     }
 
-    SECTION("A view transformation matrix looking in the positive z direction")
+    SECTION("A inverse_view transformation matrix looking in the positive z direction")
     {
         Point from(0,0,0);
         Point to (0,0,1);
@@ -29,7 +29,7 @@ TEST_CASE("testing the view transformation matrix")
         REQUIRE( view == Mat4::IDENTITY().scale(-1,1,-1));
     }
 
-    SECTION("the view transformation moves the world")
+    SECTION("the inverse_view transformation moves the world")
     {
         Point from(0,0,8);
         Point to (0,0,0);
@@ -62,8 +62,7 @@ TEST_CASE("testing how the camera constructs the rays")
         World w;
         Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
         Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-        Sphere default_half;
-        default_half.transform.scale(0.5,0.5,0.5);
+        Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
         w.add(light);
         w.add(default_unit);

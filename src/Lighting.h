@@ -1,5 +1,5 @@
-#ifndef RAY_TRACER_TRACING_H
-#define RAY_TRACER_TRACING_H
+#ifndef RAY_TRACER_LIGHTING_H
+#define RAY_TRACER_LIGHTING_H
 
 class World;
 class Ray;
@@ -23,4 +23,4 @@ namespace Lighting
     Color shade_hit ( const World &world , const LightComputations &comps , bool calc_shadow , int remaining = 4 );
 }
 
-#endif //RAY_TRACER_TRACING_H
+#endif //RAY_TRACER_LIGHTING_H

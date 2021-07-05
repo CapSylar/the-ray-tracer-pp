@@ -2,14 +2,13 @@
 #include "World.h"
 #include "Material.h"
 #include "Ray.h"
-#include "tracing.h"
+#include "Lighting.h"
 
 TEST_CASE("testing world creation")
 {
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
     Sphere default_unit(  Mat4::IDENTITY() ,  Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half;
-    default_half.transform.scale(0.5,0.5,0.5);
+    Sphere default_half( Mat4::IDENTITY().scale(0.5,0.5,0.5));
 
     SECTION("testing default world creation and intersection")
     {
@@ -33,8 +32,8 @@ TEST_CASE ("intersecting the world")
 {
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
     Sphere default_unit(  Mat4::IDENTITY() ,  Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half;
-    default_half.transform.scale(0.5,0.5,0.5);
+    Sphere default_half( Mat4::IDENTITY().scale(0.5,0.5,0.5));
+
 
     SECTION("the color when a ray misses")
     {

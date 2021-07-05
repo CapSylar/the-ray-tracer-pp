@@ -257,8 +257,7 @@ Mat4 &Mat4::shear(float Xy , float Xz , float Yx , float Yz , float Zx , float Z
     return *this;
 }
 
-Mat4 Mat4::transpose_copy()
-{
+Mat4 Mat4::transpose_copy() const {
     Mat4 temp;
     for ( int row = 0 ; row < 4 ; ++row )
     {
