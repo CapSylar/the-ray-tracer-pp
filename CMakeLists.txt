@@ -8,6 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_compile_options(-Wall -Wextra -pedantic)
 
+#find openMP
+
+find_package(OpenMP)
+
 # configure Catch2 unit testing framework
 
 find_package(Catch2 REQUIRED)
@@ -28,8 +32,13 @@ find_package(SDL2_image REQUIRED)
 add_executable( ${PROJECT_NAME} src/main.cpp )
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} m tracerMath graphics )
 
+if ( OpenMP_CXX_FOUND )
+    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} m tracerMath graphics )
+
+
+
+endif()
 
 
 
