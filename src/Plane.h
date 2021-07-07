@@ -6,9 +6,9 @@
 class Plane : public Shape
 {
 public:
-    explicit Plane ( Mat4 trans = Mat4() , Material mat = Material() ) : Shape( trans , mat ) {}
+    explicit Plane (  Material *mat  , Mat4 trans = Mat4() ) : Shape( trans , mat ) {}
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
-    Vector local_normal_at(const Point &point) const override;
+    [[nodiscard]] Vector local_normal_at(const Point &point) const override;
 };
 
 

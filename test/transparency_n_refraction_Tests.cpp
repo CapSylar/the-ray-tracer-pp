@@ -7,27 +7,28 @@
 #include "Lighting.h"
 #include "World.h"
 #include "utilities.h"
+#include "PlainMaterial.h"
 
 TEST_CASE("testing intersections")
 {
-    Sphere a ( Mat4::IDENTITY().scale(2,2,2) , Material::getGlassMaterial() );
-    a.material.refractive_index = 1.5f;
+    Sphere a ( PlainMaterial::getGlassMaterial()  , Mat4::IDENTITY().scale(2,2,2) );
+    a.material->refractive_index = 1.5f;
 
-    Sphere b ( Mat4::IDENTITY().translate(0,0,-0.25) , Material::getGlassMaterial() );
-    b.material.refractive_index = 2.0f;
+    Sphere b ( PlainMaterial::getGlassMaterial() , Mat4::IDENTITY().translate(0,0,-0.25) );
+    b.material->refractive_index = 2.0f;
 
-    Sphere c ( Mat4::IDENTITY().translate(0,0,0.25) , Material::getGlassMaterial() );
-    c.material.refractive_index = 2.5f;
+    Sphere c ( PlainMaterial::getGlassMaterial() , Mat4::IDENTITY().translate(0,0,0.25) );
+    c.material->refractive_index = 2.5f;
 
     Ray ray ( Vec4::getPoint(0,0,-4) , Vec4::getVector(0,0,1) );
 
     std::vector<Intersection> list;
-    list.emplace_back( 2 , a );
-    list.emplace_back( 2.75f , b );
-    list.emplace_back( 3.25f , c );
-    list.emplace_back( 4.75f , b );
-    list.emplace_back( 5.25f , c );
-    list.emplace_back( 6 , a );
+    list.emplace_back( 2 , &a );
+    list.emplace_back( 2.75f , &b );
+    list.emplace_back( 3.25f , &c );
+    list.emplace_back( 4.75f , &b );
+    list.emplace_back( 5.25f , &c );
+    list.emplace_back( 6 , &a );
 
     SECTION("finding n1 and n2 at various intersections")
     {
@@ -77,22 +78,22 @@ TEST_CASE("testing refraction")
 {
     World w;
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
+    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
     w.add(default_unit);
     w.add(default_half);
 
-    default_unit.material = Material::getGlassMaterial() ; // make it glass
+    default_unit.material = PlainMaterial::getGlassMaterial() ; // make it glass
 
 
     SECTION("the refracted color at the maximum recursive depth")
     {
         Ray ray ( Vec4::getPoint(0,0,-5 ) , Vec4::getVector(0,0,1)) ;
         std::vector<Intersection> list;
-        list.emplace_back( 4 , default_unit );
-        list.emplace_back( 6 , default_unit );
+        list.emplace_back( 4 , &default_unit );
+        list.emplace_back( 6 , &default_unit );
 
         LightComputations comps ( list[0] , ray , list );
 
@@ -103,8 +104,8 @@ TEST_CASE("testing refraction")
     {
         Ray ray ( Vec4::getPoint(0,0,sqrtf(2)/2 ) , Vec4::getVector(0,1,0)) ;
         std::vector<Intersection> list;
-        list.emplace_back( -sqrtf(2)/2 , default_unit );
-        list.emplace_back( sqrtf(2)/2 , default_unit );
+        list.emplace_back( -sqrtf(2)/2 , &default_unit );
+        list.emplace_back( sqrtf(2)/2 , &default_unit );
 
         LightComputations comps ( list[1] , ray , list );
 
@@ -116,11 +117,11 @@ TEST_CASE("testing schlick's approximation")
 {
     SECTION("the approx under total internal reflection")
     {
-        Sphere p ( Mat4::IDENTITY() , Material::getGlassMaterial() );
+        Sphere p ( PlainMaterial::getGlassMaterial() );
         Ray ray ( Vec4::getPoint(0,0, sqrtf(2)/2 ) , Vec4::getVector(0,1,0 ) );
         std::vector<Intersection> list;
-        list.emplace_back( -sqrtf(2)/2 , p );
-        list.emplace_back( sqrtf(2)/2 , p );
+        list.emplace_back( -sqrtf(2)/2 , &p );
+        list.emplace_back( sqrtf(2)/2 , &p );
 
         LightComputations comps(  list[1] , ray , list );
         REQUIRE(isEqual_f(Lighting::get_schlick_factor(comps) , 1 )  );
@@ -128,11 +129,11 @@ TEST_CASE("testing schlick's approximation")
 
     SECTION("the approx with a perpendicular viewing angle")
     {
-        Sphere p ( Mat4::IDENTITY() , Material::getGlassMaterial() );
+        Sphere p ( PlainMaterial::getGlassMaterial() );
         Ray ray ( Vec4::getPoint(0,0, 0 ) , Vec4::getVector(0,1,0 ) );
         std::vector<Intersection> list;
-        list.emplace_back( -1 , p );
-        list.emplace_back( 1 , p );
+        list.emplace_back( -1 , &p );
+        list.emplace_back( 1 , &p );
 
         LightComputations comps ( list[1] , ray , list );
         REQUIRE(isEqual_f(Lighting::get_schlick_factor(comps) ,  0.04f) ) ;
@@ -141,10 +142,10 @@ TEST_CASE("testing schlick's approximation")
 
     SECTION("the approx with a small angle and n2 > n1")
     {
-        Sphere p ( Mat4::IDENTITY() , Material::getGlassMaterial() );
+        Sphere p ( PlainMaterial::getGlassMaterial() );
         Ray ray ( Vec4::getPoint(0,0.99f, -2 ) , Vec4::getVector(0,0,1 ) );
         std::vector<Intersection> list;
-        list.emplace_back( 1.8589f , p );
+        list.emplace_back( 1.8589f , &p );
 
         LightComputations comps ( list[0] , ray , list );
         REQUIRE(isEqual_f(Lighting::get_schlick_factor(comps) , 0.48873f ) ) ;

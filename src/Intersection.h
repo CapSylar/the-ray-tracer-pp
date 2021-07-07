@@ -10,7 +10,7 @@ class Shape;
 class Intersection
 {
 public:
-    Intersection( float tt , const Shape &shape ) : t(tt) , obj(&shape) {}
+    Intersection( float tt , const Shape *shape ) : t(tt) , obj(shape) {}
 
     static std::optional<Intersection> get_hit( const std::vector<Intersection> &list );
 

@@ -11,7 +11,7 @@ class Intersection;
 class Sphere : public Shape
 {
 public:
-    explicit Sphere( Mat4 trans = Mat4() , Material mat = Material() ) : Shape( trans , mat ) {}
+    explicit Sphere( Material *mat , Mat4 trans = Mat4() ) : Shape( trans , mat ) {}
 
 private:
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;

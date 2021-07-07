@@ -3,12 +3,13 @@
 #include "Material.h"
 #include "Ray.h"
 #include "Lighting.h"
+#include "PlainMaterial.h"
 
 TEST_CASE("testing world creation")
 {
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit(  Mat4::IDENTITY() ,  Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half( Mat4::IDENTITY().scale(0.5,0.5,0.5));
+    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     SECTION("testing default world creation and intersection")
     {
@@ -31,8 +32,9 @@ TEST_CASE("testing world creation")
 TEST_CASE ("intersecting the world")
 {
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit(  Mat4::IDENTITY() ,  Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half( Mat4::IDENTITY().scale(0.5,0.5,0.5));
+
+    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
 
     SECTION("the color when a ray misses")
@@ -65,15 +67,15 @@ TEST_CASE("intersecting the world with some shadow calculation")
     {
         World world;
         Light light( Color(1,1,1) , Vec4::getPoint(0,0,-10) );
-        Sphere sphere1;
-        Sphere sphere2 (  Mat4::IDENTITY().translate(0,0,10) );
+        Sphere sphere1 ( new PlainMaterial() );
+        Sphere sphere2 ( new PlainMaterial() , Mat4::IDENTITY().translate(0,0,10) );
 
         world.add(light);
         world.add(sphere1);
         world.add(sphere2);
 
         Ray ray( Vec4::getPoint(0,0,5) , Vec4::getVector(0,0,1) );
-        Intersection inter( 4 , sphere2 );
+        Intersection inter( 4 , &sphere2 );
 
         auto color = Lighting::color_at(world, ray, true, 0);
         REQUIRE( color == Color(0.1,0.1,0.1)) ;

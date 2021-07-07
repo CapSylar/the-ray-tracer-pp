@@ -16,6 +16,7 @@ bool operator == ( const Color &lhs , const Color &rhs );
 bool operator != ( const Color &lhs , const Color &rhs );
 Color operator * ( const Color &lhs , float scalar );
 Color operator + ( const Color &lhs , const Color &rhs );
+Color operator - ( const Color &lhs , const Color &rhs );
 std::ostream& operator << ( std::ostream& os , const Color& rhs );
 
 #endif //RAY_TRACER_COLOR_H

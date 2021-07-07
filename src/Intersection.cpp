@@ -6,7 +6,7 @@
 std::optional<Intersection> Intersection::get_hit(const std::vector<Intersection> &list)
 {
     // assume the list is sorted
-    auto ret = std::lower_bound( list.begin() , list.end() , Intersection( 0 , Sphere() ) );
+    auto ret = std::lower_bound( list.begin() , list.end() , Intersection( 0 , nullptr ) );
     if ( ret != list.end() )
         return *ret;
     return std::nullopt;

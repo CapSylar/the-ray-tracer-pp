@@ -14,8 +14,8 @@ void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &li
 
     if ( delta >= 0 ) // we have 1+ intersection(s)
     {
-        list.emplace_back( ((-b - sqrtf(delta)) / (2*a)) , *this );
-        list.emplace_back( ((-b + sqrtf(delta)) / (2*a)) , *this );
+        list.emplace_back( ((-b - sqrtf(delta)) / (2*a)) , this );
+        list.emplace_back( ((-b + sqrtf(delta)) / (2*a)) , this );
     }
 }
 

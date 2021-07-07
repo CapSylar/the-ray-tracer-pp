@@ -35,7 +35,7 @@ LightComputations::LightComputations(const Intersection &inter, const Ray &ray, 
         if ( intersection == inter ) // if intersection is the hit
         {
             hit = true;
-            n1 = shapes.empty() ? 1 : shapes.back()->material.refractive_index ;
+            n1 = shapes.empty() ? 1 : shapes.back()->material->refractive_index ;
         }
 
         // if we already included the shape inside the list, then the hit means that we are exiting the material,
@@ -54,7 +54,7 @@ LightComputations::LightComputations(const Intersection &inter, const Ray &ray, 
         // find n2
         if ( hit )
         {
-            n2 = shapes.empty() ? 1 : shapes.back()->material.refractive_index ;
+            n2 = shapes.empty() ? 1 : shapes.back()->material->refractive_index ;
         }
 
     }

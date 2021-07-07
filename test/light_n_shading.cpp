@@ -5,6 +5,7 @@
 #include "LightComputations.h"
 #include "Intersection.h"
 #include "Plane.h"
+#include "PlainMaterial.h"
 
 TEST_CASE( "testing lights n materials" )
 {
@@ -17,28 +18,29 @@ TEST_CASE( "testing lights n materials" )
 
     SECTION("testing the default material")
     {
-        Material mat;
-        REQUIRE(mat.color == Color());
-        REQUIRE(mat.shininess == 200 );
-        REQUIRE(mat.specular == 0.9f);
-        REQUIRE(mat.diffuse == 0.9f);
-        REQUIRE(mat.ambient == 0.1f);
-        REQUIRE(mat.reflectance == 0.0f);
-        REQUIRE(mat.transparency == 0.0f );
-        REQUIRE( mat.refractive_index == 1.0f );
+        Material *mat = new PlainMaterial() ;
+        REQUIRE(mat->get_albedo(Vec4::getPoint(0,0,0)) == Color());
+        REQUIRE(mat->shininess == 200 );
+        REQUIRE(mat->specular == 0.9f);
+        REQUIRE(mat->diffuse == 0.9f);
+        REQUIRE(mat->ambient == 0.1f);
+        REQUIRE(mat->reflectance == 0.0f);
+        REQUIRE(mat->transparency == 0.0f );
+        REQUIRE( mat->refractive_index == 1.0f );
     }
 
     SECTION("testing the glass material")
     {
-        Material mat = Material::getGlassMaterial();
-        REQUIRE(mat.transparency == 1);
-        REQUIRE(mat.refractive_index == 1.5f);
+        Material *mat = PlainMaterial::getGlassMaterial();
+        REQUIRE(mat->transparency == 1);
+        REQUIRE(mat->refractive_index == 1.5f);
+        delete(mat);
     }
 }
 
 TEST_CASE("testing phong shading")
 {
-    Sphere def;
+    Sphere def ( new PlainMaterial() );
     Light light( Color(1,1,1) , Vec4::getPoint(0,0,-10));
     Vector normalv = Vec4::getVector(0,0,-1);
     Point position = Vec4::getPoint() ;
@@ -98,8 +100,9 @@ TEST_CASE("testing for shadows")
 {
     World w;
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
+
+    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
     w.add(default_unit);
@@ -135,8 +138,8 @@ TEST_CASE("testing lighting with reflections ON")
 {
     World w;
     Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit(  Mat4::IDENTITY() ,  Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
-    Sphere default_half ( Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
+    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
     w.add(default_half);
@@ -145,21 +148,21 @@ TEST_CASE("testing lighting with reflections ON")
     SECTION("the reflected color for a non-reflective material")
     {
         Ray ray( Vec4::getPoint(0,0,0) , Vec4::getVector(0,0,1) );
-        default_half.material.ambient = 1;
+        default_half.material->ambient = 1;
 
-        Intersection inter( 1 , default_half );
+        Intersection inter( 1 , &default_half );
         LightComputations comps ( inter , ray );
         REQUIRE(Lighting::get_reflected_color(w, comps, 0) == Color(0, 0, 0) );
     }
 
     SECTION("the reflected color only for a reflective material")
     {
-        Plane p( Mat4().translate(0,-1,0) );
-        p.material.reflectance = 0.5f;
+        Plane p(  new PlainMaterial() , Mat4().translate(0,-1,0) );
+        p.material->reflectance = 0.5f;
 
         w.add(p);
         Ray ray( Vec4::getPoint(0,0,-3) , Vec4::getVector(0, -sqrtf(2)/2, sqrtf(2)/2 ) );
-        Intersection inter(sqrtf(2) , p );
+        Intersection inter(sqrtf(2) , &p );
         LightComputations comps ( inter , ray );
 
         REQUIRE(Lighting::get_reflected_color(w, comps, 1) == Color(0.190333 , 0.237916 , 0.142749 ) );
@@ -167,12 +170,12 @@ TEST_CASE("testing lighting with reflections ON")
 
     SECTION("the reflected color for a reflective material")
     {
-        Plane p( Mat4().translate(0,-1,0) );
-        p.material.reflectance = 0.5f;
+        Plane p( new PlainMaterial() , Mat4().translate(0,-1,0) );
+        p.material->reflectance = 0.5f;
 
         w.add(p);
         Ray ray( Vec4::getPoint(0,0,-3) , Vec4::getVector(0, -sqrtf(2)/2, sqrtf(2)/2 ) );
-        Intersection inter(sqrtf(2) , p );
+        Intersection inter(sqrtf(2) , &p );
         LightComputations comps ( inter , ray );
 
         REQUIRE(Lighting::color_at(w, ray, true, 1) == Color(0.876758 , 0.924341 , 0.829174 ) );

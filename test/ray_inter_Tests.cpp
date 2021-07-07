@@ -4,6 +4,7 @@
 #include "Ray.h"
 #include "Sphere.h"
 #include "Intersection.h"
+#include "PlainMaterial.h"
 
 TEST_CASE("RAY TESTS")
 {
@@ -26,12 +27,16 @@ TEST_CASE("RAY TESTS")
         REQUIRE(uut.position(-1) == Vec4::getPoint(1, 3, 4));
         REQUIRE(uut.position(2.5) == Vec4::getPoint(4.5, 3, 4));
     }
+}
 
+TEST_CASE ("Sphere intersection tests 2")
+{
+    Sphere s ( new PlainMaterial() );
+    std::vector<Intersection> list;
 
     SECTION("a ray intersects a Sphere at two points")
     {
         Ray r(Vec4::getPoint(0, 0, -5), Vec4::getVector(0, 0, 1));
-        Sphere s;
         s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
@@ -43,7 +48,6 @@ TEST_CASE("RAY TESTS")
     SECTION("a ray intersects a Sphere at a tangent")
     {
         Ray r(Vec4::getPoint(0, 1, -5), Vec4::getVector(0, 0, 1));
-        Sphere s;
         s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
@@ -54,7 +58,6 @@ TEST_CASE("RAY TESTS")
     SECTION("the ray misses the sphere")
     {
         Ray r(Vec4::getPoint(0, 2, -5), Vec4::getVector(0, 0, 1));
-        Sphere s;
         s.intersect(r , list );
 
         REQUIRE(list.empty());
@@ -63,7 +66,6 @@ TEST_CASE("RAY TESTS")
     SECTION("the ray originates from within the sphere")
     {
         Ray r(Vec4::getPoint(0, 0, 0), Vec4::getVector(0, 0, 1));
-        Sphere s;
         s.intersect(r , list);
 
         REQUIRE(list.size() == 2);
@@ -75,7 +77,6 @@ TEST_CASE("RAY TESTS")
     SECTION("a sphere is behind a ra")
     {
         Ray r(Vec4::getPoint(0, 0, 5), Vec4::getVector(0, 0, 1));
-        Sphere s;
         s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
@@ -86,13 +87,13 @@ TEST_CASE("RAY TESTS")
 
 TEST_CASE("testing the get_hit function")
 {
-    Sphere s;
+    Sphere s ( new PlainMaterial() );
     std::vector<Intersection> list;
 
     SECTION("testing the get_hit function")
     {
-        auto s1 = Intersection( 1 , s );
-        auto s2 = Intersection( 2 , s );
+        auto s1 = Intersection( 1 , &s );
+        auto s2 = Intersection( 2 , &s );
         list.push_back(s1);
         list.push_back(s2);
 
@@ -107,8 +108,8 @@ TEST_CASE("testing the get_hit function")
 
     SECTION("testing the hit function with some negative t")
     {
-        auto s1 = Intersection( -1 , s );
-        auto s2 = Intersection( 2 , s );
+        auto s1 = Intersection( -1 , &s );
+        auto s2 = Intersection( 2 , &s );
         list.push_back(s1);
         list.push_back(s2);
 
@@ -121,8 +122,8 @@ TEST_CASE("testing the get_hit function")
 
     SECTION("the hit, when all intersections are negative")
     {
-        auto s1 = Intersection( -2 , s );
-        auto s2 = Intersection( -1 , s );
+        auto s1 = Intersection( -2 , &s );
+        auto s2 = Intersection( -1 , &s );
         list.push_back(s1);
         list.push_back(s2);
 
@@ -133,8 +134,8 @@ TEST_CASE("testing the get_hit function")
 
     SECTION("the hit, when all intersections are negative")
     {
-        auto s1 = Intersection( -2 , s );
-        auto s2 = Intersection( -1 , s );
+        auto s1 = Intersection( -2 , &s );
+        auto s2 = Intersection( -1 , &s );
         list.push_back(s1);
         list.push_back(s2);
 
@@ -145,10 +146,10 @@ TEST_CASE("testing the get_hit function")
 
     SECTION("the hit, when all intersections are negative")
     {
-        auto s1 = Intersection( -3 , s );
-        auto s2 = Intersection( 2 , s );
-        auto s3 = Intersection( 5 , s );
-        auto s4 = Intersection( 7 , s );
+        auto s1 = Intersection( -3 , &s );
+        auto s2 = Intersection( 2 , &s );
+        auto s3 = Intersection( 5 , &s );
+        auto s4 = Intersection( 7 , &s );
 
         list.push_back(s1);
         list.push_back(s2);

@@ -10,7 +10,7 @@ public:
     float min , max ;
     bool is_capped ;
 
-    explicit Cylinder ( float minimum = -INFINITY, float maximum = INFINITY , bool capped = false , Mat4 trans = Mat4() , Material mat = Material() ) :
+    explicit Cylinder (  Material *mat , float minimum = -INFINITY, float maximum = INFINITY , bool capped = false , Mat4 trans = Mat4() ) :
         Shape ( trans , mat ), min(minimum) , max(maximum) , is_capped(capped) {}
 
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;

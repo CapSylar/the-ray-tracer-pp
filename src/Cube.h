@@ -9,7 +9,7 @@
 class Cube : public Shape
 {
 public:
-    explicit Cube ( Mat4 trans = Mat4() , Material mat = Material() ): Shape ( trans , mat ) {}
+    explicit Cube ( Material *mat , Mat4 trans = Mat4()  ): Shape ( trans , mat ) {}
 
 private:
     static std::pair<float,float> get_axis_intersections( float origin , float direction ) ;

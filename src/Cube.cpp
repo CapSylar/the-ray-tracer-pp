@@ -17,8 +17,8 @@ void Cube::local_intersect(const Ray &ray, std::vector<Intersection> &list) cons
     if ( tmin > tmax ) // no intersection
         return;
 
-    list.emplace_back( tmin , *this );
-    list.emplace_back( tmax , *this );
+    list.emplace_back( tmin , this );
+    list.emplace_back( tmax , this );
 }
 
 Vector Cube::local_normal_at(const Point &point) const

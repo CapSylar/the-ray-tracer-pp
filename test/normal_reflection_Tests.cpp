@@ -4,10 +4,11 @@
 #include "Plane.h"
 #include "Intersection.h"
 #include "LightComputations.h"
+#include "PlainMaterial.h"
 
 TEST_CASE("normal tests")
 {
-    Sphere s;
+    Sphere s ( new PlainMaterial() );
     SECTION("the normal on a sphere at a point on the x axis")
     {
         auto test = s.normal_at(Vec4::getPoint(1,0,0));
@@ -35,14 +36,14 @@ TEST_CASE("normal tests")
 
     SECTION("computed normal on a translated sphere")
     {
-        Sphere local ( Mat4::IDENTITY().translate(0,1,0)) ;
+        Sphere local ( new PlainMaterial() ,Mat4::IDENTITY().translate(0,1,0)) ;
         auto n = local.normal_at( Vec4::getPoint(0,1.70711,-0.70711));
         REQUIRE( n == Vec4::getVector(0,0.707107,-0.707107));
     }
 
     SECTION("computed normal on a transformed sphere")
     {
-        Sphere local ( Mat4::IDENTITY().rotate_z(M_PI/5).scale(1,0.5,1) );
+        Sphere local ( new PlainMaterial() , Mat4::IDENTITY().rotate_z(M_PI/5).scale(1,0.5,1) );
         auto n = local.normal_at( Vec4::getPoint(0, sqrtf(2)/2,-sqrtf(2)/2));
         REQUIRE( n == Vec4::getVector(0,0.970143,-0.242536));
     }
@@ -69,10 +70,10 @@ TEST_CASE("testing reflection of vectors")
 
 TEST_CASE("precomputing the reflection vector")
 {
-    Plane p;
+    Plane p ( new PlainMaterial() );
     float sqrt2over2 = sqrtf(2) / 2;
     Ray ray( Vec4::getPoint(0,1,-1) , Vec4::getVector(0,-sqrt2over2 , sqrt2over2 )) ;
-    Intersection inter(sqrtf(2) , p );
+    Intersection inter(sqrtf(2) , &p );
 
     LightComputations comps ( inter , ray );
     REQUIRE( comps.reflected == Vec4::getVector( 0 , sqrt2over2 , sqrt2over2 ) );

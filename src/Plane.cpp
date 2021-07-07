@@ -12,7 +12,7 @@ void Plane::local_intersect(const Ray &ray, std::vector<Intersection> &list) con
     }
     else
     {
-        list.emplace_back( -ray.origin.y / ray.direction.y , *this );
+        list.emplace_back( -ray.origin.y / ray.direction.y , this );
     }
 }
 

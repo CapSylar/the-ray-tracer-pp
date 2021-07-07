@@ -26,10 +26,10 @@ void Cylinder::local_intersect(const Ray &ray, std::vector<Intersection> &list) 
             const auto y1 = ray.origin.y + t1 * ray.direction.y ;
 
             if ( y0 > min && y0 < max )
-                list.emplace_back( t0 , *this );
+                list.emplace_back( t0 , this );
 
             if ( y1 > min && y1 < max )
-                list.emplace_back( t1 , *this );
+                list.emplace_back( t1 , this );
         }
     }
 
@@ -75,10 +75,10 @@ void Cylinder::intersect_caps(const Ray &ray, std::vector<Intersection> &list) c
     const auto t_lower = ( min - ray.origin.y ) / ray.direction.y ;
 
     if (check_cap( ray , t_lower ))
-        list.emplace_back( t_lower , *this );
+        list.emplace_back( t_lower , this );
 
     const auto t_upper = ( max - ray.origin.y ) / ray.direction.y ;
 
     if (check_cap( ray , t_upper ))
-        list.emplace_back( t_upper , *this );
+        list.emplace_back( t_upper , this );
 }

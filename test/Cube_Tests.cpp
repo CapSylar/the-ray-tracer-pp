@@ -4,10 +4,11 @@
 #include <vector>
 #include <Intersection.h>
 #include "Vec4.h"
+#include "PlainMaterial.h"
 
 TEST_CASE("A ray intersects a cube")
 {
-    Cube c;
+    Cube c( new PlainMaterial() );
     std::vector<Intersection> list;
 
     SECTION("+x intersection")
@@ -86,7 +87,7 @@ TEST_CASE("A ray intersects a cube")
 
 TEST_CASE("ray misses the cube")
 {
-    Cube c;
+    Cube c ( new PlainMaterial() );
     std::vector<Intersection> list;
 
     SECTION("Scenario 1")
@@ -142,7 +143,7 @@ TEST_CASE("ray misses the cube")
 
 TEST_CASE("the normal of a cube")
 {
-    Cube c;
+    Cube c ( new PlainMaterial() );
 
     SECTION("scenario 1")
     {

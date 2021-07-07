@@ -4,10 +4,11 @@
 #include <vector>
 #include "Intersection.h"
 #include "utilities.h"
+#include "PlainMaterial.h"
 
 TEST_CASE("testing cylinder")
 {
-    Cylinder c;
+    Cylinder c ( new PlainMaterial() );
     std::vector<Intersection> list;
 
     SECTION("a ray misses a cylinder 1")
@@ -38,7 +39,7 @@ TEST_CASE("testing cylinder")
 
 TEST_CASE("the ray hits the cylinder")
 {
-    Cylinder c;
+    Cylinder c ( new PlainMaterial() );
     std::vector<Intersection> list;
 
     SECTION("a ray strikes the cylinder scenario 1")
@@ -76,7 +77,7 @@ TEST_CASE("the ray hits the cylinder")
 
 TEST_CASE("testing cylinder normals")
 {
-    Cylinder c;
+    Cylinder c ( new PlainMaterial() ) ;
     SECTION("scenario 1")
     {
         auto x = c.local_normal_at( Vec4::getPoint(1,0,0)) ;
@@ -104,7 +105,7 @@ TEST_CASE("testing cylinder normals")
 
 TEST_CASE("testing capped cylinders")
 {
-    Cylinder c( 1 , 2 );
+    Cylinder c( new PlainMaterial() , 1 , 2 );
     std::vector<Intersection> list;
 
     SECTION("intersection scenario 1")
@@ -158,7 +159,7 @@ TEST_CASE("testing capped cylinders")
 
 TEST_CASE("intersecting the caps of a cylinder")
 {
-    Cylinder c ( 1 , 2 , true );
+    Cylinder c (  new PlainMaterial() , 1 , 2 , true );
     std::vector<Intersection> list;
 
 
@@ -206,7 +207,7 @@ TEST_CASE("intersecting the caps of a cylinder")
 
 TEST_CASE()
 {
-    Cylinder c ( 1 , 2 , true );
+    Cylinder c (  new PlainMaterial() ,  1 , 2 , true );
     std::vector<Intersection> list;
 
     SECTION("normal scenario 1")
