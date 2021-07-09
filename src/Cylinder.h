@@ -1,9 +1,9 @@
 #ifndef RAY_TRACER_CYLINDER_H
 #define RAY_TRACER_CYLINDER_H
 
-#include "Shape.h"
+#include "UnitShape.h"
 
-class Cylinder : public Shape
+class Cylinder : public UnitShape
 {
 public:
 
@@ -11,7 +11,7 @@ public:
     bool is_capped ;
 
     explicit Cylinder (  Material *mat , float minimum = -INFINITY, float maximum = INFINITY , bool capped = false , Mat4 trans = Mat4() ) :
-        Shape ( trans , mat ), min(minimum) , max(maximum) , is_capped(capped) {}
+        UnitShape ( trans , mat ), min(minimum) , max(maximum) , is_capped(capped) {}
 
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
     [[nodiscard]] Vector local_normal_at(const Point &point) const override;

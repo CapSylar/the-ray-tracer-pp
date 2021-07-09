@@ -5,7 +5,7 @@
 #include "Mat4.h"
 
 struct Color;
-class Shape ;
+class UnitShape ;
 
 struct ColorPattern
 {

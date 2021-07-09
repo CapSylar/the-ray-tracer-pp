@@ -5,7 +5,7 @@
 #include "Material.h"
 
 struct ColorPattern;
-struct Shape;
+struct UnitShape;
 
 
 struct PatternMaterial : public Material

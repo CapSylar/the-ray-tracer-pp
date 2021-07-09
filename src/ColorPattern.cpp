@@ -1,7 +1,7 @@
 #include "ColorPattern.h"
 
 #include "Color.h"
-#include "Shape.h"
+#include "UnitShape.h"
 
 Color ColorPattern::color_at( const Point world_point ) const
 {

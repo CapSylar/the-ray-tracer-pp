@@ -3,19 +3,19 @@
 
 #include <vector>
 #include <optional>
+#include "UnitShape.h"
 
-#include "Shape.h"
 class Ray;
 class Intersection;
 
-class Sphere : public Shape
+class Sphere : public UnitShape
 {
 public:
-    explicit Sphere( Material *mat , Mat4 trans = Mat4() ) : Shape( trans , mat ) {}
+    explicit Sphere( Material *mat , Mat4 trans = Mat4() ) : UnitShape( std::move(trans) , mat ) {}
 
 private:
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
-    Vector local_normal_at(const Point &point) const override;
+    [[nodiscard]] Vector local_normal_at(const Point &point) const override;
 };
 
 

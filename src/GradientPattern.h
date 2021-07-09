@@ -3,7 +3,7 @@
 
 #include "ColorPattern.h"
 #include "Color.h"
-#include "Shape.h"
+#include "UnitShape.h"
 
 class GradientPattern : public ColorPattern
 {
@@ -12,7 +12,7 @@ public:
     Color b;
 
     explicit GradientPattern( Color colorA = Color(1,1,1) , Color colorB = Color(0,0,0) ) : a(colorA) , b(colorB) {}
-    explicit GradientPattern ( const Shape &obj , Mat4 pattern_trans = Mat4::IDENTITY() , Color colorA = Color(1,1,1) ,
+    explicit GradientPattern ( const UnitShape &obj , Mat4 pattern_trans = Mat4::IDENTITY() , Color colorA = Color(1,1,1) ,
                               Color colorB = Color(0,0,0)) : ColorPattern( obj.inverse_trans , pattern_trans ), a(colorA) , b(colorB) {}
 
 

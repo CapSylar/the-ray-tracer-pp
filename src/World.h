@@ -25,12 +25,12 @@ public:
         lights.push_back(&light);
     }
 
-    Light& getLight() const
+    [[nodiscard]] Light& getLight() const
     {
         return *(lights[0]);
     }
 
-    std::vector<Intersection> intersect ( const Ray &ray ) const ;
+    [[nodiscard]] std::vector<Intersection> intersect ( const Ray &ray ) const ;
 
 private:
     std::vector<Shape *> objects;

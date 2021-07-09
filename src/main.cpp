@@ -7,11 +7,9 @@
 #include "World.h"
 #include "Cube.h"
 #include "PatternMaterial.h"
-#include "StripedPattern.h"
 #include "PlainMaterial.h"
-#include "GradientPattern.h"
 #include "CheckerPattern.h"
-#include "RingPattern.h"
+#include "Triangle.h"
 
 int main ()
 {
@@ -20,71 +18,51 @@ int main ()
     Plane floor (nullptr , Mat4::IDENTITY() ) ;
     floor.material = new PatternMaterial( new CheckerPattern(  floor , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).rotate_y(M_PI/5) , Color(1,0,0) , Color(0,0,1))  );
 
-    Plane right_wall ( new PlainMaterial( Color(0,0.9f , 0 ) ) , Mat4::IDENTITY().rotate_z(M_PI/2).translate(2,0,0)  );
-    right_wall.material->specular = 0.4f;
-    right_wall.material->shininess = 300 ;
-
-    Plane left_wall ( new PlainMaterial( Color( 1 , 0 ,0 )) , Mat4::IDENTITY().rotate_z(-M_PI/2).translate(-2,0,0) ) ;
-    left_wall.material->specular = 0.4f;
-    left_wall.material->shininess = 300 ;
-
-    Plane back_wall ( new PlainMaterial( Color(0.7f,0,0.7f )) , Mat4::IDENTITY().rotate_x(-M_PI/2).translate(0,0,3.5f) ) ;
-
+    Plane back_wall (nullptr , Mat4::IDENTITY().rotate_x(-M_PI/2).translate(0,0,100 ) ) ;
+    back_wall.material = new PatternMaterial ( new CheckerPattern( back_wall , Mat4::IDENTITY().scale(0.7f,0.7f,0.7f)) );
     back_wall.material->specular = 0.4f;
     back_wall.material->shininess = 300 ;
-//    back_wall.material->reflectance = 0.5f;
-
-    Plane ceiling ( new PlainMaterial( Color(1,1,0)) , Mat4::IDENTITY().rotate_x(-M_PI).translate(0,3,0) ) ;
-    ceiling.material->ambient = 0.3f;
-
-    Plane behind_wall ( new PlainMaterial( Color( 1 , 0 , 1 )) , Mat4::IDENTITY().rotate_x(M_PI/2).translate(0,0,-2) ) ;
-
-    behind_wall.material->specular = 0.4f;
-    behind_wall.material->shininess = 300 ;
 
     Light light( Color(1,1,1) , Vec4::getPoint(0,2.5f,1 ));
 
     // objects
 
-    Sphere glass_ball ( PlainMaterial::getGlassMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).translate(-0.5f,0.5f,1.4f)  );
+    Sphere glass_ball ( PlainMaterial::getGlassMaterial() , Mat4::IDENTITY().scale(1,1,1).translate(-1,1,0)  );
 //    glass_ball.material->albedo = Color(0.2f ,0.2f,0.2f);
     glass_ball.material->reflectance = 1 ;
     glass_ball.material->diffuse = 0.4f;
     glass_ball.material->specular = 1;
     glass_ball.material->shininess = 300 ;
 
-    Sphere air_ball (nullptr, Mat4::IDENTITY().scale(0.25f,0.25f,0.25f).translate(-0.5f,0.5f,1.4f) );
-    air_ball.material = new PatternMaterial ( new CheckerPattern( air_ball , Mat4::IDENTITY().scale(0.1f,0.1f,0.1f)) );
+    Sphere air_ball (nullptr, Mat4::IDENTITY().scale(0.3f,0.3f,0.3f).translate(-1 ,1 ,0 ) );
+    air_ball.material = new PatternMaterial ( new CheckerPattern( air_ball , Mat4::IDENTITY().scale(0.1f,0.1f,0.1f) , Color(0,1,1) , Color(1,0,1) )  );
+    air_ball.material->ambient = 1;
 
-    Cube mirror_ball (  new PlainMaterial() ,  Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).rotate_y(M_PI/4).rotate_z(M_PI/5).translate(0.5f,1 ,2)  );
+    Cube mirror_ball (  new PlainMaterial( Color(0.1f,0.1f,0.1f)) ,  Mat4::IDENTITY().scale(0.5f,0.5f,0.5f).rotate_y(M_PI/4).translate(1,0.5f ,-0.2f)  );
     mirror_ball.material->reflectance = 1;
 //    mirror_ball.material->refractive_index = 1.5f;
 //    mirror_ball.material->transparency = 1;
 
-    Plane hello ( PlainMaterial::getGlassMaterial() , Mat4::IDENTITY().rotate_x(-M_PI/2).translate(0,0,1) );
-//    hello.material.color = Color(0,1 ,0.1f);
-
+    Triangle testTri ( new PlainMaterial(Color(1,0,1)) , Vec4::getPoint(-1,2,3) , Vec4::getPoint(0.5f,2.5f,3.5f)  , Vec4::getPoint(1,1.5f,2.5f)   );
 
     cornell_box.add(light);
     cornell_box.add( floor );
-    cornell_box.add( right_wall );
-    cornell_box.add( left_wall );
     cornell_box.add( back_wall );
-    cornell_box.add( behind_wall );
-    cornell_box.add( ceiling ) ;
 
-    cornell_box.add( glass_ball );
-    cornell_box.add ( mirror_ball );
+//    cornell_box.add( glass_ball );
+//    cornell_box.add ( mirror_ball );
 //    cornell_box.add ( air_ball );
 
-    Point from = Vec4::getPoint(0,1,-1);
-    Point to = Vec4::getPoint(0,1,1);
+    cornell_box.add(testTri);
+
+    Point from = Vec4::getPoint(0,1,-4);
+    Point to = Vec4::getPoint(0,1,-1);
     Vector up = Vec4::getVector(0,1,0);
 
     // render the frame
     auto begin = std::chrono::steady_clock::now();
 
-    Camera cam ( 1920*2 , 1080*2 , M_PI/2, Mat4::view(from , to , up ) );
+    Camera cam ( 1920/3 , 1080/3 , M_PI/2, Mat4::view(from , to , up ) );
     auto canvas = render( cam , cornell_box );
 
     auto end = std::chrono::steady_clock::now();

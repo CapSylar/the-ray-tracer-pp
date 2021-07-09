@@ -1,15 +1,15 @@
 #ifndef RAY_TRACER_CUBE_H
 #define RAY_TRACER_CUBE_H
 
-#include "Shape.h"
+#include "UnitShape.h"
 #include <utility>
 #include <cmath>
 #include "utilities.h"
 
-class Cube : public Shape
+class Cube : public UnitShape
 {
 public:
-    explicit Cube ( Material *mat , Mat4 trans = Mat4()  ): Shape ( trans , mat ) {}
+    explicit Cube ( Material *mat , Mat4 trans = Mat4()  ): UnitShape ( trans , mat ) {}
 
 private:
     static std::pair<float,float> get_axis_intersections( float origin , float direction ) ;
