@@ -16,6 +16,15 @@ find_package(OpenMP)
 
 find_package(Catch2 REQUIRED)
 
+#configure SDL2
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+
+#add tinyobjectloader library from git submodule
+add_subdirectory(external/objloader)
+
 # separate target for testing
 add_subdirectory( library )
 
@@ -23,24 +32,11 @@ add_subdirectory( src )
 
 add_subdirectory( test )
 
-#configure SDL2
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-
 add_executable( ${PROJECT_NAME} src/main.cpp )
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 
-if ( OpenMP_CXX_FOUND )
-    TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} m tracerMath graphics )
-
-
-
-endif()
-
-
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} m tracerMath graphics )
 
 
 

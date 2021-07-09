@@ -21,7 +21,7 @@ Canvas render( const Camera& cam , const World &world )
 {
     Canvas canvas( cam.getHSize() , cam.getVSize() );
 
-#pragma omp parallel default(none) shared(cam, world , canvas)
+#pragma omp parallel default(none) shared(cam, world , canvas) num_threads(12)
     {
 #pragma omp for schedule(dynamic,10) // 10 magic number, experiment with this
         for ( int y = 0 ; y < cam.getVSize() ; ++y )
@@ -29,7 +29,7 @@ Canvas render( const Camera& cam , const World &world )
             for ( int x = 0 ; x < cam.getHSize() ; ++x )
             {
                 auto ray = cam.getRayForPixel( x , y );
-                Color c = Lighting::color_at(world, ray, true, 5 );
+                Color c = Lighting::color_at(world, ray, true , 5 );
                 canvas.write( c , x , y );
             }
         }
