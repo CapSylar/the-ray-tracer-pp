@@ -18,6 +18,9 @@ Vector UnitShape::normal_at(const Point &surface_point) const
     auto local_normal = local_normal_at( local_point );
 
     // convert the normal back to the world system
+    //TODO: consider skipping the computing the inverse of the transpose and just using normal trans matrix, since
+    // most of the time we are just using uniform scaling for the scene primitives
+
     Vector world_normal = inverse_trans.transpose_copy() * local_normal ;
     world_normal.w = 0;
 

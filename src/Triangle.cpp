@@ -36,10 +36,21 @@ void Triangle::local_intersect(const Ray &ray, std::vector<Intersection> &list) 
 
     // calculate t by solving for the final unknown using cramer
     const auto t = inv * ( e2 * origin_cross_e1 );
-    list.emplace_back( t , this );
+    list.emplace_back( t , this , u , v );
 }
 
 Vector Triangle::local_normal_at(const Point &point) const
 {
-    return normal;
+    //TODO: we are passing u and v in the point, find a cleaner way to do this while staying consistent with API
+
+    // if triangle is smooth then we can use normal interpolation, else just use _n1 which is uniform across the whole triangle
+    if ( isSmooth )
+    {
+        // return interpolation using u and v encoded in point x and y respectively
+        return _n2 * point.x + _n3 * point.y + _n1 * ( 1 - point.x - point.y );
+    }
+    else
+    {
+        return _n1 ;
+    }
 }

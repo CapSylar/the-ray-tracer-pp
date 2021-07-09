@@ -50,6 +50,9 @@ void load_obj(  World &world, const std::string &filename)
             auto fv = ( size_t ) shapes[s].mesh.num_face_vertices[f] ;
 
             Vec4 point_triple[3];
+            Vec4 normal_triple[3];
+
+            bool isNormal = false;
 
             for ( size_t v = 0 ; v < fv ; ++v )
             {
@@ -64,16 +67,24 @@ void load_obj(  World &world, const std::string &filename)
                 // Check if `normal_index` is zero or positive. negative = no normal data
                 if (idx.normal_index >= 0)
                 {
+                    isNormal = true;
                     tinyobj::real_t nx = attrib.normals[3 * size_t(idx.normal_index) + 0];
                     tinyobj::real_t ny = attrib.normals[3 * size_t(idx.normal_index) + 1];
                     tinyobj::real_t nz = attrib.normals[3 * size_t(idx.normal_index) + 2];
+                    normal_triple[v] = Vec4::getVector(nx,ny,nz);
                 }
             }
 
             // construct a triangle from the 3 vertices
             //TODO: this leaks, fix later!!!
-            const auto tri = new Triangle( new PlainMaterial(Color(0,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] ) ;
-//            tri->material->reflectance = 1;
+
+            Triangle *tri ;
+            if ( isNormal )
+                tri = new Triangle( new PlainMaterial(Color(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] , normal_triple[0] , normal_triple[1] , normal_triple[2] ) ;
+            else
+                tri = new Triangle( new PlainMaterial(Color(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] ) ;
+
+            tri->material->reflectance = 0.6f;
             world.add(*tri);
 
             index_offset += fv;

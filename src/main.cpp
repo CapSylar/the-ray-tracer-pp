@@ -1,5 +1,5 @@
-#include <chrono>
 
+#include <chrono>
 #include "Ray.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -25,14 +25,14 @@ int main ()
     world.add(light);
     world.add(floor );
 
-    Point from = Vec4::getPoint(10,5,-2);
-    Point to = Vec4::getPoint(0,1,0 );
+    Point from = Vec4::getPoint(5,4,-3);
+    Point to = Vec4::getPoint(-1.7f,1,0 );
     Vector up = Vec4::getVector(0,1,0);
 
     // render the frame
     auto begin = std::chrono::steady_clock::now();
 
-    Camera cam ( 1920 , 1080 , M_PI/3, Mat4::view(from , to , up ) );
+    Camera cam ( 1080*2 , 2400*2 , M_PI/2, Mat4::view(from , to , up ) );
     auto canvas = render(cam , world );
 
     auto end = std::chrono::steady_clock::now();
