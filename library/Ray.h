@@ -1,23 +1,25 @@
 #ifndef RAY_TRACER_RAY_H
 #define RAY_TRACER_RAY_H
 
-#include "Vec4.h"
 #include "Mat4.h"
+
+#include "Vec3f.h"
+#include "Point3f.h"
 
 class Ray
 {
 public:
-    Ray ( Point orig , Vector dir ): origin(orig) , direction(dir) {}
+    Ray ( Point3f orig , Vec3f dir ): origin(orig) , direction(dir) {}
 
-    [[nodiscard]] Point position( float t ) const ;
+    [[nodiscard]] Point3f position( float t ) const ;
     void transform (const Mat4& trans_matrix );
-    static Vector reflect ( const Vector &in , const Vector &normal );
+    static Vec3f reflect ( const Vec3f &in , const Vec3f &normal );
 
-    Point origin;
-    Vector direction;
+    Point3f origin;
+    Vec3f direction;
 };
 
-Vector reflect ( const Vector &in , const Vector &normal );
+Vec3f reflect ( const Vec3f &in , const Vec3f &normal );
 std::ostream& operator << ( std::ostream& os , const Ray &rhs );
 
 

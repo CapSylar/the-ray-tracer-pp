@@ -12,7 +12,7 @@ void Shape::intersect(const Ray &ray, std::vector<Intersection> &list) const
     local_intersect( ray , list );
 }
 
-Vector Shape::normal_at(const Point &surface_point) const
+Vec3f Shape::normal_at(const Point3f &surface_point) const
 {
     return local_normal_at(surface_point);
 }

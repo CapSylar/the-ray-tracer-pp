@@ -4,7 +4,7 @@
 
 void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &list) const
 {
-    Vector sphere_to_ray = local_ray.origin - Vec4::getPoint(0,0,0); // TODO: fix this ugliness
+    Vec3f sphere_to_ray(local_ray.origin); // same as subtracting from the origin
 
     float a = local_ray.direction * local_ray.direction;
     float b = 2 * ( local_ray.direction * sphere_to_ray );
@@ -19,8 +19,8 @@ void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &li
     }
 }
 
-Vector Sphere::local_normal_at(const Point &local_point) const
+Vec3f Sphere::local_normal_at(const Point3f &local_point) const
 {
     // locally, calculating the normal is as easy as subtracting the origin(0,0,0) from the surface point
-    return local_point - Vec4::getPoint();
+    return Vec3f(local_point);
 }

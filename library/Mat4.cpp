@@ -1,13 +1,14 @@
 #include "Mat4.h"
-#include "Vec4.h"
 #include "utilities.h"
 #include "Transformation.h"
+#include "Vec3f.h"
+#include "Point3f.h"
 
 bool operator == ( const Mat4 &lhs , const Mat4 &rhs )
 {
     for ( int i = 0 ; i < 16 ; ++i )
     {
-        if (!isEqual_f(lhs.m[i],rhs.m[i]))
+        if (!isEqualF(lhs.m[i], rhs.m[i]))
             return false;
     }
 
@@ -29,16 +30,22 @@ Mat4 operator * ( const Mat4 &lhs , const Mat4 &rhs )
     return toReturn;
 }
 
-Vec4 operator * ( const Mat4 &lhs , const Vec4 &rhs )
+Point3f operator * ( const Mat4 &lhs , const Point3f &rhs )
 {
-    float x = lhs[0] * rhs.x + lhs[1] * rhs.y + lhs[2] * rhs.z + lhs[3] * rhs.w ;
-    float y = lhs[4] * rhs.x + lhs[5] * rhs.y + lhs[6] * rhs.z + lhs[7] * rhs.w ;
-    float z = lhs[8] * rhs.x + lhs[9] * rhs.y + lhs[10] * rhs.z + lhs[11] * rhs.w ;
+    const auto  x = lhs[0] * rhs.x + lhs[1] * rhs.y + lhs[2] * rhs.z + lhs[3] ;
+    const auto  y = lhs[4] * rhs.x + lhs[5] * rhs.y + lhs[6] * rhs.z + lhs[7] ;
+    const auto  z = lhs[8] * rhs.x + lhs[9] * rhs.y + lhs[10] * rhs.z + lhs[11] ;
 
-    //TODO: see if we can omit the last calculation since we may not need it
-    float w = lhs[12] * rhs.x + lhs[13] * rhs.y + lhs[14] * rhs.z + lhs[15] * rhs.w ;
+    return Point3f(x,y,z);
+}
 
-    return Vec4(x,y,z,w);
+Vec3f operator * ( const Mat4 &lhs , const Vec3f &rhs )
+{
+    const auto  x = lhs[0] * rhs.x + lhs[1] * rhs.y + lhs[2] * rhs.z ;
+    const auto  y = lhs[4] * rhs.x + lhs[5] * rhs.y + lhs[6] * rhs.z ;
+    const auto  z = lhs[8] * rhs.x + lhs[9] * rhs.y + lhs[10] * rhs.z ;
+
+    return Vec3f(x,y,z);
 }
 
 std::ostream& operator<< ( std::ostream& os , const Mat4 &rhs )
@@ -57,14 +64,14 @@ Mat4 Mat4::IDENTITY()
     return Mat4({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) ;
 }
 
-Mat4 Mat4::view( Point from , Point to , Vector up )
+Mat4 Mat4::view( Point3f from , Point3f to , Vec3f up )
 {
-    Vector forward = to - from ;
+    Vec3f forward = to - from ;
     forward.normalize();
 
     up.normalize();
-    Vector left = Vector::cross( forward , up );
-    Vector true_up = Vector::cross ( left , forward );
+    Vec3f left = cross( forward , up );
+    Vec3f true_up = cross ( left , forward );
 
     Mat4 rotation_mat = { left.x , left.y , left.z , 0,
                           true_up.x , true_up.y , true_up.z , 0,

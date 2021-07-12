@@ -1,8 +1,8 @@
 #ifndef RAY_TRACER_MATERIAL_H
 #define RAY_TRACER_MATERIAL_H
 
-#include "Vec4.h"
-#include "Color.h"
+#include "Point3f.h"
+#include "Color3f.h"
 
 struct Material
 {
@@ -12,7 +12,7 @@ struct Material
     {}
 
     float ambient,diffuse,specular,shininess,reflectance, transparency, refractive_index ;
-    virtual Color get_albedo( Point point_on_surface ) = 0;
+    virtual Color3f get_albedo( Point3f point_on_surface ) = 0;
 
     virtual ~Material() = default;
 };
@@ -21,10 +21,10 @@ bool operator == ( const Material &lhs , const Material &rhs ) ;
 
 struct Light
 {
-    Color intensity;
-    Point position;
+    Color3f intensity;
+    Point3f position;
 
-    Light( Color intensity , Point position ) : intensity(intensity) , position(position) {}
+    Light( Color3f intensity , Point3f position ) : intensity(intensity) , position(position) {}
 };
 
 #endif //RAY_TRACER_MATERIAL_H

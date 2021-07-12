@@ -15,7 +15,7 @@ public:
 
 private:
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
-    [[nodiscard]] Vector local_normal_at(const Point &point) const override;
+    [[nodiscard]] Vec3f local_normal_at(const Point3f &point) const override;
 };
 
 

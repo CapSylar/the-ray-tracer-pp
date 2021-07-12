@@ -40,29 +40,29 @@ void load_obj(  World &world, const std::string &filename)
     auto &materials = reader.GetMaterials();
 
     // loop over shapes
-    for ( size_t s = 0 ; s < shapes.size() ; ++s )
+    for (const auto & shape : shapes)
     {
         size_t index_offset = 0 ;
         // loop over the polygon faces
-        for ( size_t f = 0 ; f < shapes[s].mesh.num_face_vertices.size() ; ++f )
+        for ( size_t f = 0 ; f < shape.mesh.num_face_vertices.size() ; ++f )
         {
             // get the number of vertices of the current face ( 3 is triangulate is on which it is )
-            auto fv = ( size_t ) shapes[s].mesh.num_face_vertices[f] ;
+            auto fv = ( size_t ) shape.mesh.num_face_vertices[f] ;
 
-            Vec4 point_triple[3];
-            Vec4 normal_triple[3];
+            Point3f point_triple[3];
+            Vec3f normal_triple[3];
 
             bool isNormal = false;
 
             for ( size_t v = 0 ; v < fv ; ++v )
             {
                 // access the vertex components
-                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
                 tinyobj::real_t vx = attrib.vertices[3 * size_t(idx.vertex_index) + 0];
                 tinyobj::real_t vy = attrib.vertices[3 * size_t(idx.vertex_index) + 1];
                 tinyobj::real_t vz = attrib.vertices[3 * size_t(idx.vertex_index) + 2];
 
-                point_triple[v] = Vec4::getPoint( vx , vy , vz );
+                point_triple[v] = Point3f( vx , vy , vz );
 
                 // Check if `normal_index` is zero or positive. negative = no normal data
                 if (idx.normal_index >= 0)
@@ -71,7 +71,7 @@ void load_obj(  World &world, const std::string &filename)
                     tinyobj::real_t nx = attrib.normals[3 * size_t(idx.normal_index) + 0];
                     tinyobj::real_t ny = attrib.normals[3 * size_t(idx.normal_index) + 1];
                     tinyobj::real_t nz = attrib.normals[3 * size_t(idx.normal_index) + 2];
-                    normal_triple[v] = Vec4::getVector(nx,ny,nz);
+                    normal_triple[v] = Vec3f(nx,ny,nz);
                 }
             }
 
@@ -80,9 +80,9 @@ void load_obj(  World &world, const std::string &filename)
 
             Triangle *tri ;
             if ( isNormal )
-                tri = new Triangle( new PlainMaterial(Color(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] , normal_triple[0] , normal_triple[1] , normal_triple[2] ) ;
+                tri = new Triangle( new PlainMaterial(Color3f(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] , normal_triple[0] , normal_triple[1] , normal_triple[2] ) ;
             else
-                tri = new Triangle( new PlainMaterial(Color(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] ) ;
+                tri = new Triangle( new PlainMaterial(Color3f(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] ) ;
 
             tri->material->reflectance = 0.6f;
             world.add(*tri);
@@ -90,7 +90,7 @@ void load_obj(  World &world, const std::string &filename)
             index_offset += fv;
 
             // per face material
-            shapes[s].mesh.material_ids[f];
+            shape.mesh.material_ids[f];
         }
     }
 

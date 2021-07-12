@@ -8,7 +8,7 @@ class Plane : public UnitShape
 public:
     explicit Plane (  Material *mat  , Mat4 trans = Mat4() ) : UnitShape( trans , mat ) {}
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
-    [[nodiscard]] Vector local_normal_at(const Point &point) const override;
+    Vec3f local_normal_at(const Point3f &point) const override;
 };
 
 

@@ -2,7 +2,8 @@
 #include <cmath>
 #include "Ray.h"
 #include "Intersection.h"
-#include "Vec4.h"
+#include "Vec3f.h"
+#include "Point3f.h"
 
 void Plane::local_intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
@@ -16,7 +17,7 @@ void Plane::local_intersect(const Ray &ray, std::vector<Intersection> &list) con
     }
 }
 
-Vector Plane::local_normal_at(const Point &point) const
+Vec3f Plane::local_normal_at(const Point3f &point) const
 {
-    return Vec4::getVector(0,1,0); // local plane is always in the XZ plane
+    return Vec3f(0,1,0); // local plane is always in the XZ plane
 }

@@ -4,9 +4,7 @@
 #include <algorithm>
 #include <memory>
 #include <fstream>
-#include "Color.h"
-
-#include "Vec4.h"
+#include "Color3f.h"
 
 class Canvas
 {
@@ -16,7 +14,7 @@ public:
         mem = alloc.allocate( row * col );
     }
 
-    void write ( const Color &color , int x , int y )
+    void write ( const Color3f &color , int x , int y )
     {
         // check bounds
         if ( x < 0 || x >= col || y < 0 || y >= row )
@@ -26,7 +24,7 @@ public:
         }
 
         // clamp the color between 0 and 1
-        Color copy ( std::clamp(color.r,0.0f,1.0f) , std::clamp(color.g,0.0f,1.0f) , std::clamp(color.b,0.0f,1.0f) );
+        Color3f copy ( std::clamp(color.r,0.0f,1.0f) , std::clamp(color.g,0.0f,1.0f) , std::clamp(color.b,0.0f,1.0f) );
         alloc.construct( mem + x+y*col , copy );
     }
 
@@ -52,8 +50,8 @@ public:
 private:
     int row;
     int col;
-    Color *mem;
-    std::allocator<Color> alloc;
+    Color3f *mem;
+    std::allocator<Color3f> alloc;
 };
 
 

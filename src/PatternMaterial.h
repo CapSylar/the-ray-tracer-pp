@@ -16,7 +16,7 @@ struct PatternMaterial : public Material
     template<typename... Args>
     explicit PatternMaterial ( const ColorPattern *Pattern , Args... args  ) : Material(std::forward<Args>(args)...), pattern(Pattern) {}
 
-    Color get_albedo(Point point_on_surface) override;
+    Color3f get_albedo(Point3f point_on_surface) override;
 };
 
 

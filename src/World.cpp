@@ -31,7 +31,7 @@ Canvas render( const Camera& cam , const World &world )
             for ( int x = 0 ; x < cam.getHSize() ; ++x )
             {
                 auto ray = cam.getRayForPixel( x , y );
-                Color c = Lighting::color_at(world, ray, true , 5 );
+                Color3f c = Lighting::color_at(world, ray, true , 5 );
                 canvas.write( c , x , y );
             }
         }

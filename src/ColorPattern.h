@@ -1,10 +1,9 @@
 #ifndef RAY_TRACER_COLORPATTERN_H
 #define RAY_TRACER_COLORPATTERN_H
 
-#include "Vec4.h" // TODO: check this again
 #include "Mat4.h"
 
-struct Color;
+struct Color3f;
 class UnitShape ;
 
 struct ColorPattern
@@ -14,8 +13,8 @@ struct ColorPattern
     ColorPattern() = default;
     explicit ColorPattern( Mat4 object_trans , Mat4 pattern_trans ) : inverse_trans(pattern_trans.invert() * object_trans) {}
 
-    [[nodiscard]] virtual Color local_color_at (Point local_point ) const  = 0 ;
-    [[nodiscard]] Color color_at ( Point world_point ) const ;
+    [[nodiscard]] virtual Color3f local_color_at (Point3f local_point ) const  = 0 ;
+    [[nodiscard]] Color3f color_at ( Point3f world_point ) const ;
 };
 
 

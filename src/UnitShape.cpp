@@ -10,10 +10,10 @@ void UnitShape::intersect(const Ray &ray, std::vector<Intersection> &list) const
     local_intersect( copy_ray , list );
 }
 
-Vector UnitShape::normal_at(const Point &surface_point) const
+Vec3f UnitShape::normal_at(const Point3f &surface_point) const
 {
     // first inverse_trans surface point from world space to object space
-    Vector local_point = inverse_trans * surface_point;
+    Point3f local_point = inverse_trans * surface_point;
     // calculate the normal in object space
     auto local_normal = local_normal_at( local_point );
 
@@ -21,8 +21,7 @@ Vector UnitShape::normal_at(const Point &surface_point) const
     //TODO: consider skipping the computing the inverse of the transpose and just using normal trans matrix, since
     // most of the time we are just using uniform scaling for the scene primitives
 
-    Vector world_normal = inverse_trans.transpose_copy() * local_normal ;
-    world_normal.w = 0;
+    Vec3f world_normal = inverse_trans.transpose_copy() * local_normal ;
 
     return world_normal.normalize() ;
 }

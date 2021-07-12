@@ -52,10 +52,10 @@ public:
         float world_x = half_width - offset_x;
         float world_y = half_height - offset_y;
 
-        Point pixel = inverse_view * Vec4::getPoint(world_x, world_y, -1); // TODO: invert_copy every time no no!! fine for now
-        Point origin = inverse_view * Vec4::getPoint(0, 0, 0);
+        Point3f pixel = inverse_view * Point3f(world_x, world_y, -1); // TODO: invert_copy every time no no!! fine for now
+        Point3f origin = inverse_view * Point3f();
 
-        Vector direction = pixel - origin;
+        Vec3f direction = pixel - origin;
         return Ray( origin , direction );
     }
 };

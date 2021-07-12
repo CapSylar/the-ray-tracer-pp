@@ -8,7 +8,7 @@ void Cylinder::local_intersect(const Ray &ray, std::vector<Intersection> &list) 
 {
     const auto a = ray.direction.x * ray.direction.x + ray.direction.z * ray.direction.z ;
 
-    if (!isEqual_f(a,0))
+    if (!isEqualF(a, 0))
     {
         const auto b = 2 * ray.direction.x * ray.origin.x + 2 * ray.direction.z * ray.origin.z ;
         const auto c = ray.origin.x * ray.origin.x + ray.origin.z * ray.origin.z - 1;
@@ -37,7 +37,7 @@ void Cylinder::local_intersect(const Ray &ray, std::vector<Intersection> &list) 
         intersect_caps( ray ,list );
 }
 
-Vector Cylinder::local_normal_at(const Point &point) const
+Vec3f Cylinder::local_normal_at(const Point3f &point) const
 {
     const auto dist = point.x * point.x + point.z*point.z ;
 
@@ -45,15 +45,15 @@ Vector Cylinder::local_normal_at(const Point &point) const
     {
         // check intersection at upper cap
         if ( point.y >= max - eps )
-            return Vector( 0, 1 , 0); // upwards in +y
+            return Vec3f( 0, 1 , 0); // upwards in +y
 
         // check intersection at lower cap
         if ( point.y <= min + eps )
-            return Vector( 0 , -1, 0 ); // downwards in -y
+            return Vec3f( 0 , -1, 0 ); // downwards in -y
     }
 
     // intersection not on caps
-    return Vector( point.x , 0 , point.z );
+    return Vec3f( point.x , 0 , point.z );
 }
 
 inline
@@ -68,7 +68,7 @@ bool Cylinder::check_cap(const Ray &ray, float t)
 void Cylinder::intersect_caps(const Ray &ray, std::vector<Intersection> &list) const
 {
     // check if ray is moving on y, if not it couldn't intersect with the caps
-    if ( isEqual_f(ray.direction.y,0) )
+    if (isEqualF(ray.direction.y, 0) )
         return;
 
     // check intersection at the lower cap

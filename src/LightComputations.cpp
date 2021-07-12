@@ -8,8 +8,9 @@
 #include <vector>
 
 LightComputations::LightComputations(const Intersection &inter, const Ray &ray) :
-        object(*inter.obj) , surface_point( ray.position(inter.t)) , eye(-ray.direction.normalize_copy()) ,
-        normal( inter.obj->normal_at( (inter._u > 0 || inter._v > 0) ? (Vec4::getPoint(inter._u , inter._v , 0)) : (surface_point))) ,
+        object(*inter.obj) , surface_point( ray.position(inter.t)) ,
+        normal( inter.obj->normal_at( (inter._u > 0 || inter._v > 0) ? (Point3f(inter._u , inter._v , 0)) : (surface_point))) ,
+        eye(-ray.direction.normalize_copy()) ,
         over_point(surface_point + normal * eps * 200 ) , under_point(surface_point - normal * eps * 200 ) ,reflected(Ray::reflect(ray.direction , normal ) ) , n1(1) , n2(1)
 {
     //TODO: change this later, ugly ass shit

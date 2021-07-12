@@ -11,15 +11,15 @@ TEST_CASE( "testing lights n materials" )
 {
     SECTION("testing the creation of lights")
     {
-        Light light( Color(1,1,1) , Vec4::getPoint(0,0,0));
+        Light light( Color3f(1,1,1) , Vec4::getPoint(0,0,0));
         REQUIRE(light.position == Vec4::getPoint());
-        REQUIRE(light.intensity == Color());
+        REQUIRE(light.intensity == Color3f());
     }
 
     SECTION("testing the default material")
     {
         Material *mat = new PlainMaterial() ;
-        REQUIRE(mat->get_albedo(Vec4::getPoint(0,0,0)) == Color());
+        REQUIRE(mat->get_albedo(Vec4::getPoint(0,0,0)) == Color3f());
         REQUIRE(mat->shininess == 200 );
         REQUIRE(mat->specular == 0.9f);
         REQUIRE(mat->diffuse == 0.9f);
@@ -41,7 +41,7 @@ TEST_CASE( "testing lights n materials" )
 TEST_CASE("testing phong shading")
 {
     Sphere def ( new PlainMaterial() );
-    Light light( Color(1,1,1) , Vec4::getPoint(0,0,-10));
+    Light light( Color3f(1,1,1) , Vec4::getPoint(0,0,-10));
     Vector normalv = Vec4::getVector(0,0,-1);
     Point position = Vec4::getPoint() ;
 
@@ -50,7 +50,7 @@ TEST_CASE("testing phong shading")
         LightComputations comps ( def , position , Vec4::getVector(0, 0, -1) , Vec4::getVector(0, 0, -1) ) ;
         auto res = Lighting::get_surface_color( light , comps , false );
 
-        REQUIRE( res == Color(1.9,1.9,1.9)) ;
+        REQUIRE( res == Color3f(1.9,1.9,1.9)) ;
     }
 
     SECTION("get_surface_color with the eye between light and surface, eye offset 45")
@@ -60,48 +60,48 @@ TEST_CASE("testing phong shading")
         LightComputations comps ( def , position , normalv , eyev );
         auto result = Lighting::get_surface_color( light, comps , false);
 
-        REQUIRE( result == Color(1,1,1) );
+        REQUIRE( result == Color3f(1,1,1) );
     }
 
     SECTION("get_surface_color with eye opposite surface, light offset 45")
     {
         Vector eyev = Vec4::getVector(0,0,-1);
-        Light this_light( Color() , Vec4::getPoint(0,10,-10) );
+        Light this_light( Color3f() , Vec4::getPoint(0,10,-10) );
 
         LightComputations comps ( def , position , normalv , eyev );
         auto result = Lighting::get_surface_color( this_light , comps , false);
-        REQUIRE( result == Color(0.736396,0.736396,0.736396) );
+        REQUIRE( result == Color3f(0.736396,0.736396,0.736396) );
     }
 
 //    SECTION("get_surface_color with eye in the path of the reflection vector")
 //    {
 //        Vector eyev = Vec4::getVector(0,-sqrtf(2)/2,-sqrtf(2)/2 );
-//        Light this_light( Color() , Vec4::getPoint(0,10,-10) );
+//        Light this_light( Color3f() , Vec4::getPoint(0,10,-10) );
 //
 //        LightComputations comps ( def , position , normalv , eyev );
 //        auto result = Lighting::get_surface_color( this_light , comps , false);
 //
-//        REQUIRE( result == Color(1.63639,1.63639,1.63639));
+//        REQUIRE( result == Color3f(1.63639,1.63639,1.63639));
 //    }
 
     SECTION("get_surface_color with the light behind the surface")
     {
         Vector eyev = Vec4::getVector( 0 , 0, -1 );
-        Light this_light( Color() , Vec4::getPoint(0,0,10) );
+        Light this_light( Color3f() , Vec4::getPoint(0,0,10) );
 
         LightComputations comps ( def , position , normalv , eyev );
         auto result = Lighting::get_surface_color( this_light , comps , false);
 
-        REQUIRE( result == Color(0.1,0.1,0.1) );
+        REQUIRE( result == Color3f(0.1,0.1,0.1) );
     }
 }
 
 TEST_CASE("testing for shadows")
 {
     World w;
-    Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
+    Light light( Color3f(1,1,1) , Vec4::getPoint(-10,10,-10) );
 
-    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_unit(  new PlainMaterial (Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
     Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
@@ -137,8 +137,8 @@ TEST_CASE("testing for shadows")
 TEST_CASE("testing lighting with reflections ON")
 {
     World w;
-    Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Light light( Color3f(1,1,1) , Vec4::getPoint(-10,10,-10) );
+    Sphere default_unit(  new PlainMaterial (Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
     Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
@@ -152,7 +152,7 @@ TEST_CASE("testing lighting with reflections ON")
 
         Intersection inter( 1 , &default_half );
         LightComputations comps ( inter , ray );
-        REQUIRE(Lighting::get_reflected_color(w, comps, 0) == Color(0, 0, 0) );
+        REQUIRE(Lighting::get_reflected_color(w, comps, 0) == Color3f(0, 0, 0) );
     }
 
     SECTION("the reflected color only for a reflective material")
@@ -165,7 +165,7 @@ TEST_CASE("testing lighting with reflections ON")
         Intersection inter(sqrtf(2) , &p );
         LightComputations comps ( inter , ray );
 
-        REQUIRE(Lighting::get_reflected_color(w, comps, 1) == Color(0.190333 , 0.237916 , 0.142749 ) );
+        REQUIRE(Lighting::get_reflected_color(w, comps, 1) == Color3f(0.190333 , 0.237916 , 0.142749 ) );
     }
 
     SECTION("the reflected color for a reflective material")
@@ -178,6 +178,6 @@ TEST_CASE("testing lighting with reflections ON")
         Intersection inter(sqrtf(2) , &p );
         LightComputations comps ( inter , ray );
 
-        REQUIRE(Lighting::color_at(w, ray, true, 1) == Color(0.876758 , 0.924341 , 0.829174 ) );
+        REQUIRE(Lighting::color_at(w, ray, true, 1) == Color3f(0.876758 , 0.924341 , 0.829174 ) );
     }
 }

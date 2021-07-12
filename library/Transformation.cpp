@@ -1,5 +1,6 @@
 #include "Transformation.h"
 #include "Mat4.h"
+#include <cmath>
 
 Mat4 getTranslation( float x , float y , float z )
 {
@@ -13,22 +14,22 @@ Mat4 getScaling( float x , float y , float z )
 
 Mat4 getRotationX ( float r )
 {
-    float cos = cosf(r);
-    float sin = sinf(r);
+    float cos = std::cos(r);
+    float sin = std::sin(r);
     return {1,0,0,0  ,0,cos,-sin,0,   0,sin,cos,0    ,0,0,0,1};
 }
 
 Mat4 getRotationY ( float r )
 {
-    float cos = cosf(r);
-    float sin = sinf(r);
+    float cos = std::cos(r);
+    float sin = std::sin(r);
     return {cos,0, sin,0,   0,1,0,0,  -sin,0,cos,0,   0,0,0,1};
 }
 
 Mat4 getRotationZ ( float r )
 {
-    float cos = cosf(r);
-    float sin = sinf(r);
+    float cos = std::cos(r);
+    float sin = std::sin(r);
     return {cos,-sin,0,0,   sin,cos,0,0,   0,0,1,0,   0,0,0,1};
 }
 

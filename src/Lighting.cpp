@@ -1,7 +1,6 @@
 #include "Lighting.h"
 #include "utilities.h"
 #include "LightComputations.h"
-#include "Color.h"
 #include "World.h"
 
 //#define NDEBUG
@@ -9,7 +8,7 @@
 
 namespace Lighting
 {
-    Color color_at(const World &world, const Ray &ray, bool calc_shadow, int remaining)
+    Color3f color_at(const World &world, const Ray &ray, bool calc_shadow, int remaining)
     {
         // get intersection list by intersection the ray in the world
         const auto list = world.intersect(ray);
@@ -18,7 +17,7 @@ namespace Lighting
         const auto first_inter = Intersection::get_hit(list);
 
         if (!first_inter.has_value()) // if no intersection return black
-            return Color(0, 0, 0);
+            return Color3f(0, 0, 0);
 
         // compute the necessary values for Phong shading
         LightComputations comps ( first_inter.value() , ray, list  );
@@ -27,20 +26,20 @@ namespace Lighting
     }
 
 
-    Color shade_hit ( const World &world , const LightComputations &comps , bool calc_shadow , int remaining )
+    Color3f shade_hit ( const World &world , const LightComputations &comps , bool calc_shadow , int remaining )
     {
         bool in_shadow = false;
         if ( calc_shadow )
             in_shadow = Lighting::is_shadowed( world , comps.over_point );
 
-        Color surface_color = get_surface_color( world.getLight() , comps , in_shadow);
-        Color reflected_color = get_reflected_color(world, comps, remaining );
-        Color refracted_color = get_refracted_color( world , comps , remaining );
+        Color3f surface_color = get_surface_color( world.getLight() , comps , in_shadow);
+        Color3f reflected_color = get_reflected_color(world, comps, remaining );
+        Color3f refracted_color = get_refracted_color( world , comps , remaining );
 
         const auto &mat = comps.object.material ;
         if ( mat->reflectance > 0 && mat->transparency > 0 ) // use Schlick's approx in this case
         {
-            float factor = get_schlick_factor( comps );
+            const auto factor = get_schlick_factor( comps );
             return surface_color +  (reflected_color * factor) + (refracted_color * ( 1 - factor )) ;
         }
         else
@@ -49,43 +48,44 @@ namespace Lighting
         }
     }
 
-    Color get_surface_color ( const Light &light , const LightComputations &comps , bool in_shadow )
+    Color3f get_surface_color ( const Light &light , const LightComputations &comps , bool in_shadow )
     {
-        Color base_color = comps.object.material->get_albedo(comps.surface_point) * light.intensity; // base color made up of the light color and material color
+        Color3f base_color = comps.object.material->get_albedo(comps.surface_point) * light.intensity; // base color made up of the light color and material color
 
         // calculate lightv as vector from point to the light source
-        Vector lightv = light.position - comps.surface_point ;
+        auto lightv = light.position - comps.surface_point ;
         lightv.normalize();
 
-        Color ambient = base_color * comps.object.material->ambient ;
+        Color3f ambient = base_color * comps.object.material->ambient ;
 
         // lightv and normal are both normalized vectors
-        float cosine = lightv * comps.normal ;
+        const auto cosine = lightv * comps.normal ;
 
         // if we are in shadow => diffuse and specular are zero
         if ( cosine < 0 || in_shadow ) // cosine < 0 = light source is on the other side of the surface
             return ambient;
 
-        Color diffuse = base_color * comps.object.material->diffuse * cosine ;
+        Color3f diffuse = base_color * comps.object.material->diffuse * cosine ;
 
-        Vector reflectv = Ray::reflect( -lightv , comps.normal );
+        Vec3f reflectv = Ray::reflect( -lightv , comps.normal );
 
         float reflect_dot_eye = reflectv * comps.eye ;
 
         if ( reflect_dot_eye < 0 ) // neglect the specular component
             return ambient + diffuse ;
 
-        Color specular = (light.intensity * comps.object.material->specular) * powf(reflect_dot_eye,comps.object.material->shininess);
+        Color3f specular = (light.intensity * comps.object.material->specular) * powf(reflect_dot_eye,comps.object.material->shininess);
 
         return ambient + diffuse + specular;
     }
 
     // checks if the Point is in shadow
-    bool is_shadowed( const World &world , const Point &point )
+    bool is_shadowed( const World &world , const Point3f &point )
     {
-        Vector p_to_light = world.getLight().position - point;
-        float distance = p_to_light.magnitude() ;
+        auto p_to_light = world.getLight().position - point;
+        float distance = p_to_light.length() ;
 
+        // TODO: should i normalize here ?
         Ray shadow_ray ( point , p_to_light.normalize() );
         auto list = world.intersect(shadow_ray);
 
@@ -95,11 +95,11 @@ namespace Lighting
         return ( hit.has_value() && hit->t < distance ) ;
     }
 
-    Color get_reflected_color(const World &world, const LightComputations &comps, int remaining)
+    Color3f get_reflected_color(const World &world, const LightComputations &comps, int remaining)
     {
         if ( remaining-- <= 0 || comps.object.material->reflectance == 0 )
         {
-            return Color(0,0,0); // object not reflective, return black
+            return Color3f(0,0,0); // object not reflective, return black
         }
         else
         {
@@ -119,10 +119,10 @@ namespace Lighting
         }
     }
 
-    Color get_refracted_color(const World &world, const LightComputations &comps, int remaining)
+    Color3f get_refracted_color(const World &world, const LightComputations &comps, int remaining)
     {
         if ( remaining-- <= 0 || comps.object.material->transparency == 0 )
-            return Color(0,0,0); // black
+            return Color3f(0,0,0); // black
 
         float n_ratio = comps.n1 / comps.n2 ;
         float cos_i = comps.eye * comps.normal ; // both are unit vectors
@@ -131,10 +131,10 @@ namespace Lighting
         float sin2_t = n_ratio * n_ratio * (1 - cos_i * cos_i ); // trig identity
 
         if (sin2_t > 1 ) // total internal reflection, not the job of this function
-            return Color(0,0,0); // black
+            return Color3f(0,0,0); // black
 
         float cos_t = sqrtf(1 - sin2_t) ;
-        Vector direction =  comps.normal * ( n_ratio * cos_i - cos_t ) -comps.eye * n_ratio ;
+        Vec3f direction =  comps.normal * ( n_ratio * cos_i - cos_t ) -comps.eye * n_ratio ;
 
         // create the refracted ray
         Ray refracted ( comps.under_point , direction );

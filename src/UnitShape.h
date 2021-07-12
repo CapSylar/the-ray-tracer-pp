@@ -19,7 +19,7 @@ public:
     explicit UnitShape ( Mat4 trans , Material* mat ) : Shape(mat) , inverse_trans(trans.invert()) {}
 
     void intersect(const Ray &ray, std::vector<Intersection> &list) const override ;
-    [[nodiscard]] Vector normal_at(const Point &surface_point) const override ;
+    [[nodiscard]] Vec3f normal_at(const Point3f &surface_point) const override ;
 
 };
 

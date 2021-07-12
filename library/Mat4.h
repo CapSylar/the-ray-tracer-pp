@@ -1,10 +1,11 @@
 #ifndef RAY_TRACER_MAT4_H
 #define RAY_TRACER_MAT4_H
 
-#include "Vec4.h"
-
 #include <memory>
 #include <vector>
+
+class Vec3f;
+class Point3f;
 
 class Mat4
 {
@@ -12,7 +13,7 @@ public:
     std::vector<float> m;
 
     static Mat4 IDENTITY();
-    static Mat4 view( Point from , Point to , Vector up );
+    static Mat4 view( Point3f from , Point3f to , Vec3f up );
 
     Mat4() : m({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) {} // TODO: join this and IDENTITY()
     Mat4( std::initializer_list<float> il ) : m( il.begin() , il.end() ) {}
@@ -51,7 +52,9 @@ public:
 
 bool operator == ( const Mat4 &lhs , const Mat4 &rhs );
 Mat4 operator * ( const Mat4 &lhs , const Mat4 &rhs );
-Vec4 operator * ( const Mat4 &lhs , const Vec4 &rhs );
 std::ostream& operator<< ( std::ostream& os , const Mat4 &rhs );
+
+Point3f operator * ( const Mat4 &lhs , const Point3f &rhs ) ;
+Vec3f operator * ( const Mat4 &lhs , const Vec3f &rhs ) ;
 
 #endif //RAY_TRACER_MAT4_H

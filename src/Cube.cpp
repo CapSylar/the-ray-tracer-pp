@@ -21,7 +21,7 @@ void Cube::local_intersect(const Ray &ray, std::vector<Intersection> &list) cons
     list.emplace_back( tmax , this );
 }
 
-Vector Cube::local_normal_at(const Point &point) const
+Vec3f Cube::local_normal_at(const Point3f &point) const
 {
     const float abs_x = std::abs(point.x);
     const float abs_y = std::abs(point.y);
@@ -32,15 +32,15 @@ Vector Cube::local_normal_at(const Point &point) const
 
     if ( max == abs_x ) // we are on one of the two surfaces that lie in YZ
     {
-        return Vec4::getVector( point.x , 0 , 0 ).normalize();
+        return Vec3f( point.x , 0 , 0 ).normalize();
     }
     else if ( max == abs_y ) // we are on one of the two surface that lie in XZ
     {
-        return Vec4::getVector( 0 , point.y , 0 ).normalize();
+        return Vec3f( 0 , point.y , 0 ).normalize();
     }
     else
     {
-        return Vec4::getVector( 0 , 0 , point.z ).normalize();
+        return Vec3f( 0 , 0 , point.z ).normalize();
     }
 }
 
