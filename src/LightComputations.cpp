@@ -31,7 +31,7 @@ LightComputations::LightComputations(const Intersection &inter, const Ray &ray, 
     // the ray tracer allows to embed material of different refractive properties inside each other
     // simple ray tracer that only allow transparent object to exist in isolation in the scene do not need what is below
 
-    std::vector<const Shape *> shapes;
+    std::vector<const Primitive *> shapes;
 
     for ( const auto &intersection : list )
     {
@@ -40,7 +40,7 @@ LightComputations::LightComputations(const Intersection &inter, const Ray &ray, 
         if ( intersection == inter ) // if intersection is the hit
         {
             hit = true;
-            n1 = shapes.empty() ? 1 : shapes.back()->material->refractive_index ;
+            n1 = shapes.empty() ? 1 : shapes.back()->getMaterial()->refractive_index ;
         }
 
         // if we already included the shape inside the list, then the hit means that we are exiting the material,
@@ -59,7 +59,7 @@ LightComputations::LightComputations(const Intersection &inter, const Ray &ray, 
         // find n2
         if ( hit )
         {
-            n2 = shapes.empty() ? 1 : shapes.back()->material->refractive_index ;
+            n2 = shapes.empty() ? 1 : shapes.back()->getMaterial()->refractive_index ;
         }
 
     }

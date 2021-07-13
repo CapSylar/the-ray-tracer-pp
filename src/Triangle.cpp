@@ -2,7 +2,7 @@
 #include "Ray.h"
 #include "Intersection.h"
 
-void Triangle::local_intersect(const Ray &ray, std::vector<Intersection> &list) const
+void Triangle::intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
     // `Moeller-Trumbore` ray triangle intersection algorithm
     // https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection
@@ -39,7 +39,7 @@ void Triangle::local_intersect(const Ray &ray, std::vector<Intersection> &list) 
     list.emplace_back( t , this , u , v );
 }
 
-Vec3f Triangle::local_normal_at(const Point3f &point) const
+Vec3f Triangle::normal_at(const Point3f &point) const
 {
     //TODO: we are passing u and v in the point, find a cleaner way to do this while staying consistent with API
 

@@ -10,7 +10,7 @@ struct PlainMaterial : public Material
     template<typename... Args>
     explicit PlainMaterial ( Color3f color = Color3f() , Args... args  ) :Material(std::forward<Args>(args)...), albedo(color)  {}
 
-    Color3f get_albedo(Point3f) override ;
+    Color3f get_albedo(Point3f) const override ;
 
     //TODO: does this belong here ???
     static PlainMaterial* getGlassMaterial();

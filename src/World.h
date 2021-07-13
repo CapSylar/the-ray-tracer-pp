@@ -15,7 +15,7 @@ class World
 public:
     World() = default;
 
-    void add ( Shape &shape )
+    void add ( Primitive &shape )
     {
         objects.push_back(&shape);
     }
@@ -33,7 +33,7 @@ public:
     [[nodiscard]] std::vector<Intersection> intersect ( const Ray &ray ) const ;
 
 private:
-    std::vector<Shape *> objects;
+    std::vector<Primitive *> objects;
     //TODO: for now we only have a single light source, to extend this in the future
     std::vector<Light *> lights;
 };

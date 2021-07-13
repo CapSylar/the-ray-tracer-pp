@@ -37,7 +37,7 @@ void load_obj(  World &world, const std::string &filename)
 
     auto &attrib = reader.GetAttrib();
     auto &shapes = reader.GetShapes();
-    auto &materials = reader.GetMaterials();
+//    auto &materials = reader.GetMaterials();
 
     // loop over shapes
     for (const auto & shape : shapes)

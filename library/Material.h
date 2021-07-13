@@ -12,7 +12,7 @@ struct Material
     {}
 
     float ambient,diffuse,specular,shininess,reflectance, transparency, refractive_index ;
-    virtual Color3f get_albedo( Point3f point_on_surface ) = 0;
+    virtual Color3f get_albedo( Point3f point_on_surface ) const = 0;
 
     virtual ~Material() = default;
 };

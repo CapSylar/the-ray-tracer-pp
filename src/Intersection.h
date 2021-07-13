@@ -5,20 +5,20 @@
 #include <vector>
 #include <fstream>
 
-class Shape;
+class Primitive;
 
 class Intersection
 {
 public:
-    Intersection( float tt , const Shape *shape ) : t(tt) , obj(shape) {}
+    Intersection( float tt , const Primitive *shape ) : t(tt) , obj(shape) {}
 
     //TODO: an initializer for a delegating constructor must appear once
-    Intersection ( float tt , const Shape *shape , float u , float v ) : t(tt) , obj(shape) , _u(u) , _v(v) {}
+    Intersection ( float tt , const Primitive *shape , float u , float v ) : t(tt) , obj(shape) , _u(u) , _v(v) {}
 
     static std::optional<Intersection> get_hit( const std::vector<Intersection> &list );
 
     float t; // t value for Ray that intersection with object
-    const Shape *obj;
+    const Primitive *obj;
     float _u = 0  ,_v = 0   ; // for triangles
 
     //TODO: generalize the intersection record since primitives other than triangles won't use the u and v values

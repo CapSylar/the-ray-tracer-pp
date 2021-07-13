@@ -3,7 +3,6 @@
 #include "LightComputations.h"
 #include "World.h"
 
-//#define NDEBUG
 #include <cassert>
 
 namespace Lighting
@@ -36,7 +35,7 @@ namespace Lighting
         Color3f reflected_color = get_reflected_color(world, comps, remaining );
         Color3f refracted_color = get_refracted_color( world , comps , remaining );
 
-        const auto &mat = comps.object.material ;
+        const auto &mat = comps.object.getMaterial() ;
         if ( mat->reflectance > 0 && mat->transparency > 0 ) // use Schlick's approx in this case
         {
             const auto factor = get_schlick_factor( comps );
@@ -50,13 +49,13 @@ namespace Lighting
 
     Color3f get_surface_color ( const Light &light , const LightComputations &comps , bool in_shadow )
     {
-        Color3f base_color = comps.object.material->get_albedo(comps.surface_point) * light.intensity; // base color made up of the light color and material color
+        Color3f base_color = comps.object.getMaterial()->get_albedo(comps.surface_point) * light.intensity; // base color made up of the light color and material color
 
         // calculate lightv as vector from point to the light source
         auto lightv = light.position - comps.surface_point ;
         lightv.normalize();
 
-        Color3f ambient = base_color * comps.object.material->ambient ;
+        Color3f ambient = base_color * comps.object.getMaterial()->ambient ;
 
         // lightv and normal are both normalized vectors
         const auto cosine = lightv * comps.normal ;
@@ -65,7 +64,7 @@ namespace Lighting
         if ( cosine < 0 || in_shadow ) // cosine < 0 = light source is on the other side of the surface
             return ambient;
 
-        Color3f diffuse = base_color * comps.object.material->diffuse * cosine ;
+        Color3f diffuse = base_color * comps.object.getMaterial()->diffuse * cosine ;
 
         Vec3f reflectv = Ray::reflect( -lightv , comps.normal );
 
@@ -74,7 +73,7 @@ namespace Lighting
         if ( reflect_dot_eye < 0 ) // neglect the specular component
             return ambient + diffuse ;
 
-        Color3f specular = (light.intensity * comps.object.material->specular) * powf(reflect_dot_eye,comps.object.material->shininess);
+        Color3f specular = (light.intensity * comps.object.getMaterial()->specular) * powf(reflect_dot_eye,comps.object.getMaterial()->shininess);
 
         return ambient + diffuse + specular;
     }
@@ -97,7 +96,7 @@ namespace Lighting
 
     Color3f get_reflected_color(const World &world, const LightComputations &comps, int remaining)
     {
-        if ( remaining-- <= 0 || comps.object.material->reflectance == 0 )
+        if ( remaining-- <= 0 || comps.object.getMaterial()->reflectance == 0 )
         {
             return Color3f(0,0,0); // object not reflective, return black
         }
@@ -115,13 +114,13 @@ namespace Lighting
 //            assert( closest.has_value() && (closest.value().obj != &(comps.object)) ); // test for self intersection
 //#endif
 
-            return color_at(world, reflected_ray, true , remaining ) * comps.object.material->reflectance ;
+            return color_at(world, reflected_ray, true , remaining ) * comps.object.getMaterial()->reflectance ;
         }
     }
 
     Color3f get_refracted_color(const World &world, const LightComputations &comps, int remaining)
     {
-        if ( remaining-- <= 0 || comps.object.material->transparency == 0 )
+        if ( remaining-- <= 0 || comps.object.getMaterial()->transparency == 0 )
             return Color3f(0,0,0); // black
 
         float n_ratio = comps.n1 / comps.n2 ;
