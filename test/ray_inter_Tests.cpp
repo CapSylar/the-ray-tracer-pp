@@ -12,20 +12,20 @@ TEST_CASE("RAY TESTS")
 
     SECTION("testing ray creation")
     {
-        Ray uut(Vec4::getPoint(1, 2, 3), Vec4::getVector(4, 5, 6));
+        Ray uut(Point3f(1, 2, 3), Vec3f(4, 5, 6));
 
-        REQUIRE(uut.origin == Vec4::getPoint(1, 2, 3));
-        REQUIRE(uut.direction == Vec4::getVector(4, 5, 6));
+        REQUIRE(uut.origin == Point3f(1, 2, 3));
+        REQUIRE(uut.direction == Vec3f(4, 5, 6));
     }
 
     SECTION("computing a point from a distance")
     {
-        Ray uut(Vec4::getPoint(2, 3, 4), Vec4::getVector(1, 0, 0));
+        Ray uut(Point3f(2, 3, 4), Vec3f(1, 0, 0));
 
-        REQUIRE(uut.position(0) == Vec4::getPoint(2, 3, 4));
-        REQUIRE(uut.position(1) == Vec4::getPoint(3, 3, 4));
-        REQUIRE(uut.position(-1) == Vec4::getPoint(1, 3, 4));
-        REQUIRE(uut.position(2.5) == Vec4::getPoint(4.5, 3, 4));
+        REQUIRE(uut.position(0) == Point3f(2, 3, 4));
+        REQUIRE(uut.position(1) == Point3f(3, 3, 4));
+        REQUIRE(uut.position(-1) == Point3f(1, 3, 4));
+        REQUIRE(uut.position(2.5) == Point3f(4.5, 3, 4));
     }
 }
 
@@ -36,7 +36,7 @@ TEST_CASE ("Sphere intersection tests 2")
 
     SECTION("a ray intersects a Sphere at two points")
     {
-        Ray r(Vec4::getPoint(0, 0, -5), Vec4::getVector(0, 0, 1));
+        Ray r(Point3f(0, 0, -5), Vec3f(0, 0, 1));
         s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
@@ -47,7 +47,7 @@ TEST_CASE ("Sphere intersection tests 2")
 
     SECTION("a ray intersects a Sphere at a tangent")
     {
-        Ray r(Vec4::getPoint(0, 1, -5), Vec4::getVector(0, 0, 1));
+        Ray r(Point3f(0, 1, -5), Vec3f(0, 0, 1));
         s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
@@ -57,7 +57,7 @@ TEST_CASE ("Sphere intersection tests 2")
 
     SECTION("the ray misses the sphere")
     {
-        Ray r(Vec4::getPoint(0, 2, -5), Vec4::getVector(0, 0, 1));
+        Ray r(Point3f(0, 2, -5), Vec3f(0, 0, 1));
         s.intersect(r , list );
 
         REQUIRE(list.empty());
@@ -65,7 +65,7 @@ TEST_CASE ("Sphere intersection tests 2")
 
     SECTION("the ray originates from within the sphere")
     {
-        Ray r(Vec4::getPoint(0, 0, 0), Vec4::getVector(0, 0, 1));
+        Ray r(Point3f(0, 0, 0), Vec3f(0, 0, 1));
         s.intersect(r , list);
 
         REQUIRE(list.size() == 2);
@@ -76,7 +76,7 @@ TEST_CASE ("Sphere intersection tests 2")
 
     SECTION("a sphere is behind a ra")
     {
-        Ray r(Vec4::getPoint(0, 0, 5), Vec4::getVector(0, 0, 1));
+        Ray r(Point3f(0, 0, 5), Vec3f(0, 0, 1));
         s.intersect(r , list );
 
         REQUIRE(list.size() == 2);
@@ -166,7 +166,7 @@ TEST_CASE("testing the get_hit function")
 
 TEST_CASE("transforming rays")
 {
-    Ray ray( Vec4::getPoint(1,2,3) , Vec4::getVector(0,1,0));
+    Ray ray( Point3f(1,2,3) , Vec3f(0,1,0));
     Mat4 x;
 
     SECTION("translating a ray")
@@ -174,8 +174,8 @@ TEST_CASE("transforming rays")
         x.translate(3,4,5);
         ray.transform(x);
 
-        REQUIRE(ray.origin == Vec4::getPoint(4,6,8));
-        REQUIRE(ray.direction == Vec4::getVector(0,1,0));
+        REQUIRE(ray.origin == Point3f(4,6,8));
+        REQUIRE(ray.direction == Vec3f(0,1,0));
     }
 
     SECTION("scaling a ray")
@@ -183,7 +183,7 @@ TEST_CASE("transforming rays")
         x.scale(2,3,4);
         ray.transform(x);
 
-        REQUIRE(ray.origin == Vec4::getPoint(2,6,12));
-        REQUIRE(ray.direction == Vec4::getVector(0,3,0));
+        REQUIRE(ray.origin == Point3f(2,6,12));
+        REQUIRE(ray.direction == Vec3f(0,3,0));
     }
 }

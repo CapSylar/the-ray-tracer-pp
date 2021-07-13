@@ -48,6 +48,18 @@ Vec3f operator * ( const Mat4 &lhs , const Vec3f &rhs )
     return Vec3f(x,y,z);
 }
 
+Vec3f Mat4::multByTranspose(const Vec3f &vec) const
+{
+    // better than computing the transpose and then multiplying with the vector that way
+    // just access the matrix in a different way
+    const auto  x = m[0] * vec.x + m[4] * vec.y + m[8] * vec.z ;
+    const auto  y = m[1] * vec.x + m[5] * vec.y + m[9] * vec.z ;
+    const auto  z = m[2] * vec.x + m[6] * vec.y + m[10] * vec.z ;
+
+    return Vec3f(x,y,z);
+}
+
+
 std::ostream& operator<< ( std::ostream& os , const Mat4 &rhs )
 {
     os << "[" << rhs[0] << " " << rhs[1] << " " << rhs[2] << " " << rhs[3] << "]\n";
@@ -57,6 +69,8 @@ std::ostream& operator<< ( std::ostream& os , const Mat4 &rhs )
 
     return os;
 }
+
+
 
 
 Mat4 Mat4::IDENTITY()
@@ -288,3 +302,4 @@ Mat4& Mat4::operator= ( Mat4 &&ref ) noexcept
     m = std::move(ref.m);
     return *this;
 }
+

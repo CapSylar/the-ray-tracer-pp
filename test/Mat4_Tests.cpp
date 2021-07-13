@@ -1,6 +1,10 @@
+#define CATCH_CONFIG_MAIN
 #include "catch2/catch.hpp"
+
 #include "Mat4.h"
-#include "Vec4.h"
+
+#include "Vec3f.h"
+#include "Point3f.h"
 
 
 TEST_CASE("Matrix Tests")
@@ -44,9 +48,9 @@ TEST_CASE("Matrix Tests")
     SECTION("MATRIX * VECTOR multiplication")
     {
         Mat4 x = {1,2,3,4,2,4,4,2,8,6,4,1,0,0,0,1};
-        Vec4 y(1,2,3,1);
+        Point3f y(1,2,3);
 
-        REQUIRE(x*y == Vec4(18,24,33,1));
+        REQUIRE(x*y == Point3f(18,24,33));
     }
 
     SECTION("IDENTITY MATRIX TESTS")

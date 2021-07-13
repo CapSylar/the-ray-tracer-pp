@@ -7,8 +7,8 @@
 
 TEST_CASE("testing world creation")
 {
-    Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Light light( Color3f(1,1,1) , Point3f(-10,10,-10) );
+    Sphere default_unit(  new PlainMaterial (Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
     Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     SECTION("testing default world creation and intersection")
@@ -18,7 +18,7 @@ TEST_CASE("testing world creation")
         w.add( default_unit );
         w.add ( default_half );
 
-        Ray ray( Vec4::getPoint(0,0,-5) , Vec4::getVector(0,0,1) );
+        Ray ray( Point3f(0,0,-5) , Vec3f(0,0,1) );
         auto list = w.intersect( ray );
 
         REQUIRE(list.size() == 4);
@@ -31,9 +31,9 @@ TEST_CASE("testing world creation")
 
 TEST_CASE ("intersecting the world")
 {
-    Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
+    Light light( Color3f(1,1,1) , Point3f(-10,10,-10) );
 
-    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Sphere default_unit(  new PlainMaterial (Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
     Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
 
@@ -44,8 +44,8 @@ TEST_CASE ("intersecting the world")
         w.add ( default_unit );
         w.add( default_half );
 
-        Ray ray( Vec4::getPoint(0,0,-5) , Vec4::getVector(0,1,0) );
-        REQUIRE(Color(0,0,0) == Lighting::color_at(w, ray, false, 0));
+        Ray ray( Point3f(0,0,-5) , Vec3f(0,1,0) );
+        REQUIRE(Color3f(0,0,0) == Lighting::color_at(w, ray, false, 0));
     }
 
     SECTION("the color when a ray hits")
@@ -55,9 +55,9 @@ TEST_CASE ("intersecting the world")
         w.add ( default_unit );
         w.add( default_half );
 
-        Ray ray( Vec4::getPoint(0,0,-5) , Vec4::getVector(0,0,1) );
+        Ray ray( Point3f(0,0,-5) , Vec3f(0,0,1) );
         auto c = Lighting::color_at(w, ray, false, 0);
-        REQUIRE( c == Color(0.380661,0.475827,0.285496) );
+        REQUIRE( c == Color3f(0.380661,0.475827,0.285496) );
     }
 }
 
@@ -66,7 +66,7 @@ TEST_CASE("intersecting the world with some shadow calculation")
     SECTION("intersection in a shadow")
     {
         World world;
-        Light light( Color(1,1,1) , Vec4::getPoint(0,0,-10) );
+        Light light( Color3f(1,1,1) , Point3f(0,0,-10) );
         Sphere sphere1 ( new PlainMaterial() );
         Sphere sphere2 ( new PlainMaterial() , Mat4::IDENTITY().translate(0,0,10) );
 
@@ -74,10 +74,10 @@ TEST_CASE("intersecting the world with some shadow calculation")
         world.add(sphere1);
         world.add(sphere2);
 
-        Ray ray( Vec4::getPoint(0,0,5) , Vec4::getVector(0,0,1) );
+        Ray ray( Point3f(0,0,5) , Vec3f(0,0,1) );
         Intersection inter( 4 , &sphere2 );
 
         auto color = Lighting::color_at(world, ray, true, 0);
-        REQUIRE( color == Color(0.1,0.1,0.1)) ;
+        REQUIRE( color == Color3f(0.1,0.1,0.1)) ;
     }
 }

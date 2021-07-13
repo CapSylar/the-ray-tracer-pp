@@ -12,8 +12,6 @@
 #include "Triangle.h"
 #include "Loader.h"
 
-#define NDEBUG
-
 int main ()
 {
     World world ;

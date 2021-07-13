@@ -20,7 +20,7 @@ TEST_CASE("testing intersections")
     Sphere c ( PlainMaterial::getGlassMaterial() , Mat4::IDENTITY().translate(0,0,0.25) );
     c.material->refractive_index = 2.5f;
 
-    Ray ray ( Vec4::getPoint(0,0,-4) , Vec4::getVector(0,0,1) );
+    Ray ray ( Point3f(0,0,-4) , Vec3f(0,0,1) );
 
     std::vector<Intersection> list;
     list.emplace_back( 2 , &a );
@@ -77,8 +77,8 @@ TEST_CASE("testing intersections")
 TEST_CASE("testing refraction")
 {
     World w;
-    Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-    Sphere default_unit(  new PlainMaterial (Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
+    Light light( Color3f(1,1,1) , Point3f(-10,10,-10) );
+    Sphere default_unit(  new PlainMaterial (Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ), Mat4::IDENTITY() );
     Sphere default_half ( new PlainMaterial() , Mat4::IDENTITY().scale(0.5f,0.5f,0.5f));
 
     w.add(light);
@@ -90,26 +90,26 @@ TEST_CASE("testing refraction")
 
     SECTION("the refracted color at the maximum recursive depth")
     {
-        Ray ray ( Vec4::getPoint(0,0,-5 ) , Vec4::getVector(0,0,1)) ;
+        Ray ray ( Point3f(0,0,-5 ) , Vec3f(0,0,1)) ;
         std::vector<Intersection> list;
         list.emplace_back( 4 , &default_unit );
         list.emplace_back( 6 , &default_unit );
 
         LightComputations comps ( list[0] , ray , list );
 
-        REQUIRE( Lighting::get_refracted_color( w , comps , 0 ) == Color(0,0,0) );
+        REQUIRE( Lighting::get_refracted_color( w , comps , 0 ) == Color3f(0,0,0) );
     }
 
     SECTION("the refracted color under total internal reflection")
     {
-        Ray ray ( Vec4::getPoint(0,0,sqrtf(2)/2 ) , Vec4::getVector(0,1,0)) ;
+        Ray ray ( Point3f(0,0,sqrtf(2)/2 ) , Vec3f(0,1,0)) ;
         std::vector<Intersection> list;
         list.emplace_back( -sqrtf(2)/2 , &default_unit );
         list.emplace_back( sqrtf(2)/2 , &default_unit );
 
         LightComputations comps ( list[1] , ray , list );
 
-        REQUIRE( Lighting::get_refracted_color( w, comps , 5 ) == Color(0,0,0));
+        REQUIRE( Lighting::get_refracted_color( w, comps , 5 ) == Color3f(0,0,0));
     }
 }
 
@@ -118,44 +118,44 @@ TEST_CASE("testing schlick's approximation")
     SECTION("the approx under total internal reflection")
     {
         Sphere p ( PlainMaterial::getGlassMaterial() );
-        Ray ray ( Vec4::getPoint(0,0, sqrtf(2)/2 ) , Vec4::getVector(0,1,0 ) );
+        Ray ray ( Point3f(0,0, sqrtf(2)/2 ) , Vec3f(0,1,0 ) );
         std::vector<Intersection> list;
         list.emplace_back( -sqrtf(2)/2 , &p );
         list.emplace_back( sqrtf(2)/2 , &p );
 
         LightComputations comps(  list[1] , ray , list );
-        REQUIRE(isEqual_f(Lighting::get_schlick_factor(comps) , 1 )  );
+        REQUIRE(isEqualF(Lighting::get_schlick_factor(comps), 1)  );
     }
 
     SECTION("the approx with a perpendicular viewing angle")
     {
         Sphere p ( PlainMaterial::getGlassMaterial() );
-        Ray ray ( Vec4::getPoint(0,0, 0 ) , Vec4::getVector(0,1,0 ) );
+        Ray ray ( Point3f(0,0, 0 ) , Vec3f(0,1,0 ) );
         std::vector<Intersection> list;
         list.emplace_back( -1 , &p );
         list.emplace_back( 1 , &p );
 
         LightComputations comps ( list[1] , ray , list );
-        REQUIRE(isEqual_f(Lighting::get_schlick_factor(comps) ,  0.04f) ) ;
+        REQUIRE(isEqualF(Lighting::get_schlick_factor(comps), 0.04f) ) ;
     }
 
 
     SECTION("the approx with a small angle and n2 > n1")
     {
         Sphere p ( PlainMaterial::getGlassMaterial() );
-        Ray ray ( Vec4::getPoint(0,0.99f, -2 ) , Vec4::getVector(0,0,1 ) );
+        Ray ray ( Point3f(0,0.99f, -2 ) , Vec3f(0,0,1 ) );
         std::vector<Intersection> list;
         list.emplace_back( 1.8589f , &p );
 
         LightComputations comps ( list[0] , ray , list );
-        REQUIRE(isEqual_f(Lighting::get_schlick_factor(comps) , 0.48873f ) ) ;
+        REQUIRE(isEqualF(Lighting::get_schlick_factor(comps), 0.48873f) ) ;
     }
 
 //    SECTION("test it with a reflective and transparent material")
 //    {
 //        World w;
-//        Light light( Color(1,1,1) , Vec4::getPoint(-10,10,-10) );
-//        Sphere default_unit( Mat4::IDENTITY() , Material( Color(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
+//        Light light( Color3f(1,1,1) , Point3f(-10,10,-10) );
+//        Sphere default_unit( Mat4::IDENTITY() , Material( Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
 //        Sphere default_half;
 //        default_half.inverse_trans.scale(0.5,0.5,0.5);
 //
@@ -163,7 +163,7 @@ TEST_CASE("testing schlick's approximation")
 //        w.add(default_unit);
 //        w.add(default_half);
 //
-//        Ray ray ( Vec4::getPoint(0,0,-3) , Vec4::getVector(0,-sqrtf(2)/2 , sqrtf(2)/2 ) );
+//        Ray ray ( Point3f(0,0,-3) , Vec3f(0,-sqrtf(2)/2 , sqrtf(2)/2 ) );
 //        Plane floor( Mat4::IDENTITY().translate(0,-1,0) );
 //        floor.material.transparency = 0.5f;
 //        floor.material.reflectance = 0.5f;
@@ -172,13 +172,13 @@ TEST_CASE("testing schlick's approximation")
 //        w.add(floor);
 //        Sphere p ( Mat4::IDENTITY().translate(0,-3.5f,-0.5f));
 //
-//        p.material.color = Color(1,0,0);
+//        p.material.color = Color3f(1,0,0);
 //        p.material.ambient = 0.5f;
 //
 //        w.add( p );
 //
 //        std::vector<Intersection> list ( 1 , ( Intersection(sqrtf(2) , floor) ) );
 //        LightComputations comps ( list[0] , ray , list );
-//        REQUIRE( Lighting::shade_hit(  w , comps , true , 5 ) == Color(0.933915 , 0.696434 , 0.692431 ) );
+//        REQUIRE( Lighting::shade_hit(  w , comps , true , 5 ) == Color3f(0.933915 , 0.696434 , 0.692431 ) );
 //    }
 }

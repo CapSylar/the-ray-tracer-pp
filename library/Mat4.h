@@ -48,6 +48,8 @@ public:
 
     Mat4& invert() ;
     Mat4 invert_copy () const;
+
+    Vec3f multByTranspose( const Vec3f &vec ) const;
 };
 
 bool operator == ( const Mat4 &lhs , const Mat4 &rhs );
