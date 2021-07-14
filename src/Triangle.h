@@ -21,6 +21,8 @@ public:
 
     void intersect(const Ray &ray, std::vector<Intersection> &list) const override ;
     [[nodiscard]] Vec3f normal_at(const Point3f &point) const override ;
+
+    Bounds3f worldBounds() const override;
 };
 
 

@@ -78,13 +78,13 @@ void load_obj(  World &world, const std::string &filename)
             // construct a triangle from the 3 vertices
             //TODO: this leaks, fix later!!!
 
-            Triangle *tri ;
+            Primitive *tri ;
             if ( isNormal )
                 tri = new Triangle( new PlainMaterial(Color3f(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] , normal_triple[0] , normal_triple[1] , normal_triple[2] ) ;
             else
                 tri = new Triangle( new PlainMaterial(Color3f(0.2f,0.2f,0)) , point_triple[0] , point_triple[1] , point_triple[2] ) ;
 
-            tri->material->reflectance = 0.6f;
+//            tri->material->reflectance = 0.6f;
             world.add(*tri);
 
             index_offset += fv;

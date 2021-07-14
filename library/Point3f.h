@@ -12,6 +12,9 @@ public:
     Point3f(): x(0),y(0),z(0) {}
     Point3f( float _x , float _y , float _z ) : x(_x),y(_y),z(_z) {}
 
+    float operator[]( int i ) const ;
+    float& operator[]( int i );
+
     float x,y,z;
 };
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include "utilities.h"
 #include "Intersection.h"
+#include "Bounds3f.h"
 
 void Cylinder::local_intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
@@ -25,10 +26,10 @@ void Cylinder::local_intersect(const Ray &ray, std::vector<Intersection> &list) 
             const auto y0 = ray.origin.y + t0 * ray.direction.y ;
             const auto y1 = ray.origin.y + t1 * ray.direction.y ;
 
-            if ( y0 > min && y0 < max )
+            if (y0 > zMin && y0 < zMax )
                 list.emplace_back( t0 , this );
 
-            if ( y1 > min && y1 < max )
+            if (y1 > zMin && y1 < zMax )
                 list.emplace_back( t1 , this );
         }
     }
@@ -44,11 +45,11 @@ Vec3f Cylinder::local_normal_at(const Point3f &point) const
     if ( dist < 1 ) // possible to have intersection on caps
     {
         // check intersection at upper cap
-        if ( point.y >= max - eps )
+        if (point.y >= zMax - eps )
             return Vec3f( 0, 1 , 0); // upwards in +y
 
         // check intersection at lower cap
-        if ( point.y <= min + eps )
+        if (point.y <= zMin + eps )
             return Vec3f( 0 , -1, 0 ); // downwards in -y
     }
 
@@ -72,13 +73,19 @@ void Cylinder::intersect_caps(const Ray &ray, std::vector<Intersection> &list) c
         return;
 
     // check intersection at the lower cap
-    const auto t_lower = ( min - ray.origin.y ) / ray.direction.y ;
+    const auto t_lower = (zMin - ray.origin.y ) / ray.direction.y ;
 
     if (check_cap( ray , t_lower ))
         list.emplace_back( t_lower , this );
 
-    const auto t_upper = ( max - ray.origin.y ) / ray.direction.y ;
+    const auto t_upper = (zMax - ray.origin.y ) / ray.direction.y ;
 
     if (check_cap( ray , t_upper ))
         list.emplace_back( t_upper , this );
+}
+
+Bounds3f Cylinder::objectBounds() const
+{
+    // cylinder in object space has radius 1 and extends from zMin to zMax
+    return Bounds3f( Point3f(-1,-1,zMin) , Point3f(1,1,zMax) );
 }

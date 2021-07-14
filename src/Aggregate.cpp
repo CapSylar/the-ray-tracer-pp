@@ -11,11 +11,6 @@ const Material *Aggregate::getMaterial() const
     return nullptr;
 }
 
-void Aggregate::intersect(const Ray &ray, std::vector<Intersection> &list) const
-{
-    // do nothing
-}
-
 Vec3f Aggregate::normal_at(const Point3f &surface_point) const
 {
     std::cerr << "called normal_at() on aggregate, error" << '\n' ;

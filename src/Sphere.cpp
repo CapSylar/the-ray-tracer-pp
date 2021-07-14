@@ -1,6 +1,7 @@
 #include "Sphere.h"
 #include "Intersection.h"
 #include "Ray.h"
+#include "Bounds3f.h"
 
 void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &list) const
 {
@@ -23,4 +24,10 @@ Vec3f Sphere::local_normal_at(const Point3f &local_point) const
 {
     // locally, calculating the normal is as easy as subtracting the origin(0,0,0) from the surface point
     return Vec3f(local_point);
+}
+
+Bounds3f Sphere::objectBounds() const
+{
+    // out sphere in object space is always centered at 0 with radius = 1
+    return Bounds3f( Point3f(-1,-1,-1) , Point3f(1,1,1)  );
 }

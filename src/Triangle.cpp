@@ -1,6 +1,7 @@
 #include "Triangle.h"
 #include "Ray.h"
 #include "Intersection.h"
+#include "Bounds3f.h"
 
 void Triangle::intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
@@ -53,4 +54,9 @@ Vec3f Triangle::normal_at(const Point3f &point) const
     {
         return _n1 ;
     }
+}
+
+Bounds3f Triangle::worldBounds() const
+{
+    return Bounds3f();
 }

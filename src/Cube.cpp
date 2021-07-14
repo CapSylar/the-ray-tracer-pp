@@ -2,6 +2,7 @@
 #include "Ray.h"
 #include <algorithm>
 #include "Intersection.h"
+#include "Bounds3f.h"
 
 void Cube::local_intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
@@ -59,7 +60,15 @@ std::pair<float,float> Cube::get_axis_intersections( float origin , float direct
     }
 
     if ( t_pair.first > t_pair.second )
-        t_pair = { t_pair.second , t_pair.first }; // reorder them => ( min , max );
+        t_pair = { t_pair.second , t_pair.first }; // reorder them => ( zMin , zMax );
 
     return t_pair;
+}
+
+Bounds3f Cube::objectBounds() const
+{
+    // cube in object space is always centered with extending from -1 to 1 at every axis
+
+    return Bounds3f( Point3f(-1,-1,-1) , Point3f(1,1,1) );
+
 }

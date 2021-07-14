@@ -23,6 +23,9 @@ public:
 
     virtual void local_intersect ( const Ray &ray , std::vector<Intersection> &list ) const = 0;
     [[nodiscard]] virtual Vec3f local_normal_at ( const Point3f &point ) const = 0 ;
+
+    [[nodiscard]] Bounds3f worldBounds() const override;
+    [[nodiscard]] virtual Bounds3f objectBounds() const = 0;
 };
 
 

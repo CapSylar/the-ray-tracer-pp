@@ -21,6 +21,8 @@ public:
 
     Vec3f operator-() const ;
     Vec3f& operator=( const Point3f &point );
+    float operator[](int i) const;
+    float& operator[](int i);
     [[nodiscard]] float length() const ;
     [[nodiscard]] float lengthSquare() const;
     Vec3f& normalize();
@@ -80,6 +82,20 @@ inline
 Vec3f Vec3f::normalize_copy() const
 {
     return *this / length() ;
+}
+
+float& Vec3f::operator[](int i)
+{
+    if (i == 0) return x;
+    if (i == 1) return y;
+    return z;
+}
+
+float Vec3f::operator[](int i) const
+{
+    if (i == 0) return x;
+    if (i == 1) return y;
+    return z;
 }
 
 inline

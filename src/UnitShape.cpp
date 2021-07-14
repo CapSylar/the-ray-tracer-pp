@@ -1,6 +1,7 @@
 #include "UnitShape.h"
 #include "Intersection.h"
 #include "Ray.h"
+#include "Bounds3f.h"
 
 void UnitShape::intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
@@ -24,4 +25,10 @@ Vec3f UnitShape::normal_at(const Point3f &surface_point) const
     Vec3f world_normal = inverse_trans.multByTranspose(local_normal) ;
 
     return world_normal.normalize() ;
+}
+
+Bounds3f UnitShape::worldBounds() const
+{
+    //TODO: implement
+    return Bounds3f();
 }

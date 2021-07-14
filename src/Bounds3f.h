@@ -4,6 +4,8 @@
 #include "Point3f.h"
 #include <limits>
 
+class Ray;
+
 class Bounds3f
 {
 private:
@@ -15,8 +17,10 @@ public:
     Bounds3f() ;
     Bounds3f( const Point3f &p1 , const Point3f &p2 );
 
-    Vec3f diagonal() const;
-    int maximumExtent() const;
+    [[nodiscard]] Vec3f diagonal() const;
+    [[nodiscard]] int maximumExtent() const;
+    [[nodiscard]] float surfaceArea() const;
+    bool intersect(const Ray &ray , float *hitt0 , float *hitt1 ) const;
 
     Point3f pMin , pMax;
 };

@@ -7,14 +7,16 @@ class Cylinder : public UnitShape
 {
 public:
 
-    float min , max ;
+    float zMin , zMax ;
     bool is_capped ;
 
     explicit Cylinder (  Material *mat , float minimum = -INFINITY, float maximum = INFINITY , bool capped = false , Mat4 trans = Mat4() ) :
-        UnitShape ( trans , mat ), min(minimum) , max(maximum) , is_capped(capped) {}
+            UnitShape ( trans , mat ), zMin(minimum) , zMax(maximum) , is_capped(capped) {}
 
     void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
     [[nodiscard]] Vec3f local_normal_at(const Point3f &point) const override;
+
+    [[nodiscard]] Bounds3f objectBounds() const override;
 
 
 private:
