@@ -12,7 +12,7 @@ Bounds3f::Bounds3f()
 
 Bounds3f::Bounds3f(const Point3f &p1, const Point3f &p2)
 {
-    // find the component-wise zMin and zMax since we can't guarantee that p1 and p2 are passed in the correct order
+    // find the component-wise zMin and zMax since we can't guarantee that p1 and p2 are passed in the correct order or are aligned
     pMin = Point3f( std::min(p1.x,p2.x) , std::min(p1.y,p2.y) , std::min(p1.z,p2.z));
     pMax = Point3f( std::max(p1.x,p2.x) , std::max(p1.y,p2.y) , std::max(p1.z,p2.z));
 }

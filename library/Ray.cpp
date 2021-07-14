@@ -20,7 +20,7 @@ Point3f Ray::position( float t ) const
 
 void Ray::transform (const Mat4& trans_matrix )
 {
-    // inverse_trans the ray by the matrix
+    // worldToObject the ray by the matrix
     origin = trans_matrix * origin ;
     direction = trans_matrix * direction ;
 }

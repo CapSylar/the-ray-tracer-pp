@@ -157,7 +157,7 @@ TEST_CASE("testing schlick's approximation")
 //        Light light( Color3f(1,1,1) , Point3f(-10,10,-10) );
 //        Sphere default_unit( Mat4::IDENTITY() , Material( Color3f(0.8,1,0.6) , 0.1 , 0.7 , 0.2 ) );
 //        Sphere default_half;
-//        default_half.inverse_trans.scale(0.5,0.5,0.5);
+//        default_half.worldToObject.scale(0.5,0.5,0.5);
 //
 //        w.add(light);
 //        w.add(default_unit);

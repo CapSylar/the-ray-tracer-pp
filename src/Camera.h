@@ -8,7 +8,7 @@ class Camera
 {
     int h_size , v_size ;
     float fov ; // horizontal size, vertical size , field of inverse_view
-    float half_width , half_height , pixel_size ; // used to inverse_trans the rays
+    float half_width , half_height , pixel_size ; // used to worldToObject the rays
     Mat4 inverse_view; // default matrix is the identity matrix
 
 public:

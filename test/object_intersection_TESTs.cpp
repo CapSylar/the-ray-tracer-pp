@@ -17,7 +17,7 @@ TEST_CASE("Sphere intersection tests")
     SECTION("test sphere default transformation")
     {
         Sphere s ( new PlainMaterial() );
-        REQUIRE(s.inverse_trans == Mat4::IDENTITY() );
+        REQUIRE(s.worldToObject == Mat4::IDENTITY() );
     }
 
     SECTION("intersecting a scaled sphere with a ray")
@@ -44,7 +44,7 @@ TEST_CASE("Plane Tests")
     Plane plane ( new PlainMaterial() );
     SECTION("Plane creation test")
     {
-        REQUIRE(plane.inverse_trans == Mat4::IDENTITY() );
+        REQUIRE(plane.worldToObject == Mat4::IDENTITY() );
     }
 
     SECTION("testing Plane normals")

@@ -8,15 +8,16 @@
 class Intersection;
 class Ray;
 
-// this shape is defined as a unit and then needs and needs to be transformed to the correct position in world space
+// this shape is defined as a unit object (for ex. unit sphere at origin (0,0,0)) and then needs and needs to be transformed to the correct position in world space
 // by some transform matrix
 
 class UnitShape : public GeometricPrimitive
 {
 public:
-    Mat4 inverse_trans;
+    Mat4 objectToWorld;
+    Mat4 worldToObject;
 
-    explicit UnitShape ( Mat4 trans , Material* mat ) : GeometricPrimitive(mat) , inverse_trans(trans.invert()) {}
+    explicit UnitShape ( Mat4 trans , Material* mat ) : GeometricPrimitive(mat) , objectToWorld(trans) ,worldToObject(trans.invert()) {}
 
     void intersect(const Ray &ray, std::vector<Intersection> &list) const override ;
     [[nodiscard]] Vec3f normal_at(const Point3f &surface_point) const override ;

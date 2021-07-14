@@ -1,10 +1,11 @@
 #include "KdTreeAccel.h"
-
 #include <memory>
 #include <utility>
-#include <memory>
 #include <cstring>
 #include <algorithm>
+#include "Vec3f.h"
+#include "Ray.h"
+#include "Intersection.h"
 
 KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int traversalCost, float emptyBonus,
                          int maxPrims, int maxDepth) : intersectCost(intersectCost) , traversalCost(traversalCost) , maxPrims(maxPrims),
@@ -49,7 +50,116 @@ KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int 
 
 void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) const
 {
-    //TODO: implement
+    struct KdToDo
+    {
+        const KdAccelNode *node;
+        float tMin , tMax;
+    };
+
+    float tMin, tMax;
+
+    if ( !bounds.intersect( ray , &tMin , &tMax ))
+        return;
+
+    Vec3f invDir ( 1 / ray.direction.x , 1/ray.direction.y , 1/ray.direction.z );
+    constexpr int maxTodo = 64;
+    // record the nodes yet to be processed
+    KdToDo todo[maxTodo];
+    int todoPos = 0;
+
+    const KdAccelNode *node = nodes; // start with root
+
+    while ( node )
+    {
+        // we can stop if we found a hit closer than the current node
+        // but in our case we want to record all hits
+
+        if ( !node->isLeaf() ) // is an interior node
+        {
+            int axis = node->splitAxis();
+            // compute t value of split plane along current axis
+            float tPlane = (node->splitPos() - ray.origin[axis]) * invDir[axis];
+
+            const KdAccelNode *firstChild, *secondChild;
+            // determine which of the two we "see" first
+
+            bool isBelowFirst = (ray.origin[axis] < tPlane || // handle rare second case
+                   ( ray.origin[axis] == node->splitPos() && ray.direction[axis] <= 0) );
+
+            if ( isBelowFirst )
+            {
+                firstChild = node + 1;
+                secondChild = nodes + node->aboveChild();
+            }
+            else
+            {
+                firstChild = nodes + node->aboveChild();
+                secondChild = node + 1;
+            }
+
+            // at this point it may not be necessary to process both children of this node.
+            // it may miss one of the children but never both of them
+            // since otherwise we would not have visited the current node in the first place
+
+            // we miss the second child
+            if ( tPlane > tMax || tPlane <= 0 )
+                node = firstChild;
+
+            // we miss the first child
+            else if ( tPlane < tMin )
+                node = secondChild;
+
+            // we hit both children
+            else
+            {
+                todo[todoPos].node = secondChild;
+                todo[todoPos].tMin = tPlane;
+                todo[todoPos].tMax = tMax;
+                ++todoPos;
+
+                node = firstChild;
+                tMax = tPlane;
+            }
+        }
+        else // process current leaf node
+        {
+            int nPrimitives = node->nPrimitives();
+            // see how can access them
+            if ( nPrimitives == 1 )
+            {
+                // in this case the index is stored directly in the node
+                const auto p = primitives[node->onePrimitive];
+                // intersect the primitive
+
+                p->intersect( ray , list );
+            }
+            else
+            {
+                for ( int i = 0 ; i < nPrimitives ; ++i )
+                {
+                    // in this case the number stored is essentially an index into an index
+                    int index = primitiveIndices[node->primitiveIndicesOffset + i];
+                    const auto p = primitives[index];
+
+                    p ->intersect( ray , list );
+                }
+
+                // grab next node to process
+                if ( todoPos > 0 )
+                {
+                    --todoPos;
+                    const auto to = todo[todoPos];
+                    node = to.node;
+                    tMin = to.tMin;
+                    tMax = to.tMax;
+                }
+                else
+                    break;
+
+            }
+        }
+
+    }
 }
 
 Bounds3f KdTreeAccel::worldBound() const
