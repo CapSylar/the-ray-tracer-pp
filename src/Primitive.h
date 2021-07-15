@@ -16,10 +16,10 @@ class Primitive
 public:
 
     [[nodiscard]] virtual const Material* getMaterial() const = 0;
+    virtual Material* getMaterial() = 0;
     virtual void intersect ( const Ray &ray , std::vector<Intersection>& list ) const = 0;
     [[nodiscard]] virtual Vec3f normal_at ( const Point3f &surface_point ) const = 0 ;
-    virtual Bounds3f worldBounds() const = 0;
+    [[nodiscard]] virtual Bounds3f worldBounds() const = 0;
 };
-
 
 #endif //RAY_TRACER_PRIMITIVE_H

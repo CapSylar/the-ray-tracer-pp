@@ -9,6 +9,9 @@ public:
     explicit GeometricPrimitive( Material *mat ) : material(mat) {}
 
     [[nodiscard]] const Material *getMaterial() const override;
+
+    Material *getMaterial() override;
+
     Material* material;
 
     virtual ~GeometricPrimitive() ;

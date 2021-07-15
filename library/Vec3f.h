@@ -83,14 +83,14 @@ Vec3f Vec3f::normalize_copy() const
 {
     return *this / length() ;
 }
-
+inline
 float& Vec3f::operator[](int i)
 {
     if (i == 0) return x;
     if (i == 1) return y;
     return z;
 }
-
+inline
 float Vec3f::operator[](int i) const
 {
     if (i == 0) return x;

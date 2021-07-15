@@ -9,6 +9,8 @@ public:
     //TODO: flag some error or throw some exception when some of these methods are called
 
     [[nodiscard]] const Material *getMaterial() const override; // should never be called
+    Material *getMaterial() override;
+
     [[nodiscard]] Vec3f normal_at(const Point3f &surface_point) const override; // should never be called
 };
 

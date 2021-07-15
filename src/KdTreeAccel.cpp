@@ -1,6 +1,5 @@
 #include "KdTreeAccel.h"
 #include <memory>
-#include <utility>
 #include <cstring>
 #include <algorithm>
 #include "Vec3f.h"
@@ -9,7 +8,7 @@
 
 KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int traversalCost, float emptyBonus,
                          int maxPrims, int maxDepth) : intersectCost(intersectCost) , traversalCost(traversalCost) , maxPrims(maxPrims),
-                                                       emptyBonus(emptyBonus) , primitives(std::move(prims))
+                                                       emptyBonus(emptyBonus) , primitives(prims) , nodes(nullptr)
 {
     nAllocedNodes = nextFreeNode = 0;
 
@@ -40,12 +39,12 @@ KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int 
 
     // initialise primNums for kd-tree construction
     std::unique_ptr<int[]> primNums( new int[primitives.size()]);
+    // initially all shapes overlap the root node, so insert all indices reflecting this
     for ( size_t i = 0 ; i < primitives.size() ; ++i )
         primNums[i] = i;
 
     // build the tree
     buildTree(0 , bounds , primBounds , primNums.get() , primitives.size() , maxDepth , edges , prims0.get() , prims1.get() );
-
 }
 
 void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) const
@@ -69,7 +68,7 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
 
     const KdAccelNode *node = nodes; // start with root
 
-    while ( node )
+    while ( node != nullptr )
     {
         // we can stop if we found a hit closer than the current node
         // but in our case we want to record all hits
@@ -83,7 +82,7 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
             const KdAccelNode *firstChild, *secondChild;
             // determine which of the two we "see" first
 
-            bool isBelowFirst = (ray.origin[axis] < tPlane || // handle rare second case
+            bool isBelowFirst = (ray.origin[axis] < node->splitPos() || // handle rare second case
                    ( ray.origin[axis] == node->splitPos() && ray.direction[axis] <= 0) );
 
             if ( isBelowFirst )
@@ -117,6 +116,7 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
                 todo[todoPos].tMax = tMax;
                 ++todoPos;
 
+                // handle first child
                 node = firstChild;
                 tMax = tPlane;
             }
@@ -143,31 +143,24 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
 
                     p ->intersect( ray , list );
                 }
-
-                // grab next node to process
-                if ( todoPos > 0 )
-                {
-                    --todoPos;
-                    const auto to = todo[todoPos];
-                    node = to.node;
-                    tMin = to.tMin;
-                    tMax = to.tMax;
-                }
-                else
-                    break;
-
             }
+
+            // grab next node to process
+            if ( todoPos > 0 )
+            {
+                --todoPos;
+                const auto to = todo[todoPos];
+                node = to.node;
+                tMin = to.tMin;
+                tMax = to.tMax;
+            }
+            else
+                break;
         }
 
     }
-}
 
-Bounds3f KdTreeAccel::worldBound() const
-{
-    //TODO: implement
-    return Bounds3f();
 }
-
 void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::vector<Bounds3f> &allPrimBounds, int *primNums,
                             int nPrimitives, int depth, const std::unique_ptr<BoundEdge[]> *edges, int *prims0, int *prims1,
                             int badRefines)
@@ -196,7 +189,7 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
         return;
     }
 
-    // this node is an internal node, choose splitting plane => classify primitives => recurse
+    // this node is an internal node, choose splitting plane => classify primitives => repeat
 
     int bestAxis = -1 ,  bestOffset = -1; // keeps track of best so far
     float bestCost = INFINITY; // lowest cost so far
@@ -205,7 +198,9 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
     float invTotalSA = 1 / totalSA;
 
     Vec3f d = nodeBounds.diagonal();
-    int axis = nodeBounds.maximumExtent() ; // longest axis of bouding box
+
+    // first try to split along the axis with the largest spatial extent, since it tends to give regions of space that tend toward being square in shape
+    int axis = nodeBounds.maximumExtent() ; // longest axis of bounding box
 
     int retries = 0;
     retrySplit:
@@ -214,13 +209,13 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
             // fill the edges array
             int pn = primNums[i];
             const Bounds3f &currentBounds = allPrimBounds[pn];
-            edges[axis][2*i] = BoundEdge( bounds.pMin[axis] , pn , true );
-            edges[axis][2*i+1] = BoundEdge( bounds.pMax[axis] , pn , false );
+            edges[axis][2*i] = BoundEdge( currentBounds.pMin[axis] , pn , true );
+            edges[axis][2*i+1] = BoundEdge( currentBounds.pMax[axis] , pn , false );
         }
 
         // now sort the points in the edges[]
 
-        std::sort( edges[axis][0] , edges[axis][nPrimitives*2] , []( const BoundEdge &e0 , const BoundEdge &e1 ) -> bool
+        std::sort( &(edges[axis][0] ), &(edges[axis][nPrimitives*2] ), []( const BoundEdge &e0 , const BoundEdge &e1 ) -> bool
         {
             if ( e0.t == e1.t ) // very unlikely, but if it happens type start < type end
                 return e0.type < e1.type ;
@@ -231,6 +226,7 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
         int nBelow = 0 , nAbove = nPrimitives;
         // at first edge point, no prims are below hence = 0 and all prims are above it hence = total_num
 
+        // now we sweep along the axis looking for splitting positions
         for ( int i = 0 ; i < 2 * nPrimitives ; ++i )
         {
             // arrived at the end of a primitive, it is now below the splitting plane
@@ -252,7 +248,7 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
                                       (edgeT - nodeBounds.pMin[axis]) * ( d[otherAxis1] + d[otherAxis0] )); // 3 surfaces * 2
 
                 float aboveSA = 2 * ( d[otherAxis0] * d[otherAxis1] +
-                        ( nodeBounds.pMin[axis] - edgeT ) * ( d[otherAxis0] + d[otherAxis1 ])) ;
+                        ( nodeBounds.pMax[axis] - edgeT ) * ( d[otherAxis0] + d[otherAxis1 ])) ;
 
                 const float probBelow = belowSA * invTotalSA; // probability that a ray hits the above portion = AboveSA / totSA
                 const float probAbove = aboveSA * invTotalSA;
@@ -264,9 +260,8 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
                 {
                     bestCost = cost;
                     bestAxis = axis;
-                    bestOffset = i; // record edge point index
+                    bestOffset = i; // record edge point index along this best axis
                 }
-
             }
 
             // arrived at the start of a primitive, it is not above the splitting plane
@@ -290,9 +285,9 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
 
     // but ifs much worse and there aren't many primitives then we stop here
 
-    // TODO: how could bestAxis be -1 ?
+    // TODO: how could bestAxis be -1 since bestCost start with infinity ?
     // 4, 16 are magik numbers, experiment with them
-    if ((bestCost > 4 * oldCost && nPrimitives < 16) || ( bestAxis == -1) || badRefines == 3 )
+    if ((bestCost > 4 * oldCost && nPrimitives < 16) || ( bestAxis == -1 ) || badRefines == 3 )
     {
         nodes[nodeNum].initLeaf(primNums , nPrimitives , &primitiveIndices);
         return;
@@ -301,7 +296,8 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
     // we chose to split at this point
     // classify primitives with respect to split
 
-    int n0 = 0,n1 = 0;
+    int n0 = 0, n1 = 0;
+    // n0 number of prims below, n1 number of prims above the splitting plane
 
     for ( int i = 0 ; i < bestOffset ; ++i )
         if ( edges[bestAxis][i].type == EdgeType::Start )
@@ -315,14 +311,18 @@ void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::
 
     // create 2 bounds for the children
     Bounds3f bounds0 = nodeBounds, bounds1 = nodeBounds;
-    // resize the bounds to reflect the split
-    bounds0.pMin[bestAxis] = bounds1.pMin[bestAxis] = tSplit;
+    // resize the bounds to reflect the split, upper bound of lower bounding box is tSplit, lower bound of upper bounding box is tSplit
+    bounds0.pMax[bestAxis] = bounds1.pMin[bestAxis] = tSplit;
     buildTree( nodeNum + 1 , bounds0 , allPrimBounds , prims0 , n0 , depth-1 , edges , prims0 , prims1 + nPrimitives , badRefines );
 
     int aboveChild = nextFreeNode;
     nodes[nodeNum].initInterior( bestAxis , aboveChild , tSplit );
-    buildTree( aboveChild , bounds1 , allPrimBounds , prims1 , n1 , depth - 1 , edges , prims0 , prims1+nPrimitives , badRefines );
+    buildTree( aboveChild , bounds1 , allPrimBounds , prims1 , n1 , depth - 1 , edges , prims0 , prims1 + nPrimitives , badRefines );
+}
 
+Bounds3f KdTreeAccel::worldBounds() const
+{
+    return bounds;
 }
 
 void KdAccelNode::initInterior(int axis, int ac, float s)

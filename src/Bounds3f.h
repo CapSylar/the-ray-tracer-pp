@@ -12,7 +12,6 @@ private:
     static constexpr float min = std::numeric_limits<float>::lowest() ;
     static constexpr float max = std::numeric_limits<float>::max() ;
 
-
 public:
     Bounds3f() ;
     Bounds3f( const Point3f &p1 , const Point3f &p2 );

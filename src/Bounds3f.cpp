@@ -67,14 +67,14 @@ Bounds3f Union ( const Bounds3f &b , const Point3f &p )
 {
     // return a box that encloses the point
     return  Bounds3f( Point3f(std::min(b.pMin.x,p.x) , std::min(b.pMin.y,p.y)  , std::min(b.pMin.z,p.z)),
-                      Point3f(std::min(b.pMax.x , p.x) , std::min(b.pMax.y , p.y) , std::min(b.pMax.z , p.z) ));
+                      Point3f(std::max(b.pMax.x , p.x) , std::max(b.pMax.y , p.y) , std::max(b.pMax.z , p.z) ));
 }
 
 Bounds3f Union ( const Bounds3f &b1 , const Bounds3f &b2 )
 {
     // return a box that in the union of the two boxes
     return  Bounds3f( Point3f(std::min(b1.pMin.x,b2.pMin.x) , std::min(b1.pMin.y,b2.pMin.y)  , std::min(b1.pMin.z,b2.pMin.z)),
-                      Point3f(std::min(b1.pMax.x , b2.pMax.x) , std::min(b1.pMax.y , b2.pMax.y) , std::min(b1.pMax.z , b2.pMax.z) ));
+                      Point3f(std::max(b1.pMax.x , b2.pMax.x) , std::max(b1.pMax.y , b2.pMax.y) , std::max(b1.pMax.z , b2.pMax.z) ));
 }
 
 Bounds3f Intersect ( const Bounds3f &b1 , const Bounds3f &b2 )

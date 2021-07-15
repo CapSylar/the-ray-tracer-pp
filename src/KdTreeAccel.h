@@ -15,9 +15,9 @@ class KdTreeAccel : public Aggregate
 public:
     explicit KdTreeAccel(std::vector<Primitive *> prims , int intersectCost = 80 , int traversalCost = 1 , float emptyBonus = 0.5f ,
                          int maxPrims = 1 , int maxDepth = -1);
-    [[nodiscard]] Bounds3f worldBound() const;
     void intersect(const Ray &ray, std::vector<Intersection> &list) const override;
 
+    [[nodiscard]] Bounds3f worldBounds() const override;
 
 private:
     void buildTree (int nodeNum , const Bounds3f &nodeBounds, const std::vector<Bounds3f> &allPrimBounds , int *primNums, int nPrimitives , int depth,
@@ -44,11 +44,11 @@ struct KdAccelNode
     void initLeaf (int *primNums , int numPrimitives , std::vector<int> *primitiveIndices);
     void initInterior (int axis , int ac, float s);
 
-    float splitPos() const { return split; }
-    int nPrimitives() const { return nPrims >> 2; }
-    int splitAxis() const { return flags & 3; }
-    bool isLeaf() const { return (flags&3) == 3; }
-    int aboveChild() const { return abvChild >> 2; }
+    [[nodiscard]] float splitPos() const { return split; }
+    [[nodiscard]] int nPrimitives() const { return nPrims >> 2; }
+    [[nodiscard]] int splitAxis() const { return flags & 3; }
+    [[nodiscard]] bool isLeaf() const { return (flags&3) == 3; }
+    [[nodiscard]] int aboveChild() const { return abvChild >> 2; }
 
     union
     {

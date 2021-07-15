@@ -1,4 +1,4 @@
-#define OMP_NUM_THREADS 1
+#define OMP_NUM_THREADS 10
 
 #include "World.h"
 #include "Camera.h"

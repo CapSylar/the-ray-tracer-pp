@@ -11,3 +11,9 @@ GeometricPrimitive::~GeometricPrimitive()
 {
     delete material;
 }
+
+Material *GeometricPrimitive::getMaterial()
+{
+    return material;
+}
+

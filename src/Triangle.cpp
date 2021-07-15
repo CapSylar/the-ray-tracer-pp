@@ -58,5 +58,5 @@ Vec3f Triangle::normal_at(const Point3f &point) const
 
 Bounds3f Triangle::worldBounds() const
 {
-    return Bounds3f();
+    return Union(Bounds3f(_p1,_p2) , _p3 );
 }
