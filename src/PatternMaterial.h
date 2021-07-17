@@ -5,8 +5,7 @@
 #include "Material.h"
 
 struct ColorPattern;
-struct UnitShape;
-
+class UnitShape;
 
 struct PatternMaterial : public Material
 {
@@ -16,7 +15,7 @@ struct PatternMaterial : public Material
     template<typename... Args>
     explicit PatternMaterial ( const ColorPattern *Pattern , Args... args  ) : Material(std::forward<Args>(args)...), pattern(Pattern) {}
 
-    Color3f get_albedo(Point3f point_on_surface) const override;
+    [[nodiscard]] Color3f get_albedo(Point3f point_on_surface) const override;
 };
 
 

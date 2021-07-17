@@ -1,20 +1,15 @@
 #ifndef RAY_TRACER_RINGPATTERN_H
 #define RAY_TRACER_RINGPATTERN_H
 
+#include "DualColorPattern.h"
 #include "ColorPattern.h"
 #include "Color3f.h"
 #include "UnitShape.h"
 
-class RingPattern : public ColorPattern
+class RingPattern : public DualColorPattern
 {
+    using DualColorPattern::DualColorPattern;
 public:
-    Color3f a;
-    Color3f b;
-
-    explicit RingPattern( Color3f colorA = Color3f(1,1,1) , Color3f colorB = Color3f(0,0,0) ) : a(colorA) , b(colorB) {}
-    explicit RingPattern ( const UnitShape &obj , Mat4 pattern_trans = Mat4::IDENTITY() , Color3f colorA = Color3f(1,1,1) ,
-                              Color3f colorB = Color3f(0,0,0)) : ColorPattern(obj.worldToObject , pattern_trans ), a(colorA) , b(colorB) {}
-
     [[nodiscard]] Color3f local_color_at(Point3f local_point) const override;
 };
 
