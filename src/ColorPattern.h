@@ -17,5 +17,4 @@ struct ColorPattern
     [[nodiscard]] Color3f color_at ( Point3f world_point ) const ;
 };
 
-
 #endif //RAY_TRACER_COLORPATTERN_H

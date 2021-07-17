@@ -153,7 +153,7 @@ TEST_CASE("testing lighting with reflections ON")
         Ray ray( Point3f(0,0,0) , Vec3f(0,0,1) );
         default_half.material->ambient = 1;
 
-        Intersection inter( 1 , &default_half );
+        Intersection inter(&default_half);
         LightComputations comps ( inter , ray );
         REQUIRE(Lighting::get_reflected_color(w, comps, 0) == Color3f(0, 0, 0) );
     }
@@ -165,7 +165,7 @@ TEST_CASE("testing lighting with reflections ON")
 
         w.add(p);
         Ray ray( Point3f(0,0,-3) , Vec3f(0, -sqrtf(2)/2, sqrtf(2)/2 ) );
-        Intersection inter(sqrtf(2) , &p );
+        Intersection inter(&p);
         LightComputations comps ( inter , ray );
 
         REQUIRE(Lighting::get_reflected_color(w, comps, 1) == Color3f(0.190333 , 0.237916 , 0.142749 ) );
@@ -178,7 +178,7 @@ TEST_CASE("testing lighting with reflections ON")
 
         w.add(p);
         Ray ray( Point3f(0,0,-3) , Vec3f(0, -sqrtf(2)/2, sqrtf(2)/2 ) );
-        Intersection inter(sqrtf(2) , &p );
+        Intersection inter(&p);
         LightComputations comps ( inter , ray );
 
         REQUIRE(Lighting::color_at(w, ray, true, 1) == Color3f(0.876758 , 0.924341 , 0.829174 ) );

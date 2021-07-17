@@ -2,18 +2,18 @@
 
 #include "Material.h"
 
-const Material *GeometricPrimitive::getMaterial() const
+std::shared_ptr<const Material> GeometricPrimitive::getMaterial() const
 {
     return material;
 }
 
-GeometricPrimitive::~GeometricPrimitive()
-{
-    delete material;
-}
-
-Material *GeometricPrimitive::getMaterial()
+std::shared_ptr<Material> GeometricPrimitive::getMaterial()
 {
     return material;
+}
+
+void GeometricPrimitive::setMaterial(std::shared_ptr<Material> mat )
+{
+    material = mat;
 }
 

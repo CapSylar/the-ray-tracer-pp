@@ -25,9 +25,7 @@ Vec3f UnitShape::normal_at(const Point3f &surface_point) const
     //TODO: consider skipping the computing the inverse of the transpose and just using normal trans matrix, since
     // most of the time we are just using uniform scaling for the scene primitives
 
-    Vec3f world_normal = worldToObject.multByTranspose(local_normal) ;
-
-    return world_normal.normalize() ;
+    return worldToObject.multiplyNormal( local_normal );
 }
 
 Bounds3f UnitShape::worldBounds() const

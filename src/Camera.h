@@ -23,7 +23,7 @@ public:
         return v_size;
     }
 
-    Camera ( int h , int v , float field , Mat4 trans = Mat4::IDENTITY() ) : h_size(h) , v_size(v) , fov(field) , inverse_view(trans.invert())
+    Camera ( int h , int v , float field , Mat4 trans = Mat4() ) : h_size(h) , v_size(v) , fov(field) , inverse_view(trans.invert())
     {
         float half_view = tanf( fov/2 );
         float aspect_ratio = h_size / ( float ) v_size ;

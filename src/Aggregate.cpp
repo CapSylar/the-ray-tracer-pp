@@ -5,8 +5,7 @@
 
 //TODO: std::cerr is not the proper way to do it, fix that!!!
 
-const Material *Aggregate::getMaterial() const
-{
+std::shared_ptr<const Material> Aggregate::getMaterial() const {
     std::cerr << "called getMaterial() on aggregate, error" << '\n' ;
     return nullptr;
 }
@@ -17,8 +16,13 @@ Vec3f Aggregate::normal_at(const Point3f &surface_point) const
     return Vec3f();
 }
 
-Material *Aggregate::getMaterial()
+std::shared_ptr<Material> Aggregate::getMaterial()
 {
     std::cerr << "called getMaterial() on aggregate, error" << '\n' ;
     return nullptr;
+}
+
+void Aggregate::setMaterial(std::shared_ptr<Material> material)
+{
+    std::cerr << "called setMaterial() on aggregate, error" << '\n' ;
 }

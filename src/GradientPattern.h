@@ -12,5 +12,4 @@ public:
     [[nodiscard]] Color3f local_color_at(Point3f local_point) const override;
 };
 
-
 #endif //RAY_TRACER_GRADIENTPATTERN_H

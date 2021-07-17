@@ -27,7 +27,6 @@ KdTreeAccel::KdTreeAccel(std::vector<std::unique_ptr<Primitive>> prims, int inte
          primBounds.push_back(bound); // save the bounds of the current Primitive
      }
 
-    //TODO: maybe we can use std::pair here?
      std::unique_ptr<BoundEdge[]> edges[3];
 
     for (auto & edge : edges)
@@ -35,11 +34,11 @@ KdTreeAccel::KdTreeAccel(std::vector<std::unique_ptr<Primitive>> prims, int inte
         edge = std::make_unique<BoundEdge[]>(2 * primitives.size()); // each primitive needs 2 points when projected on axis
     }
 
-    std::unique_ptr<int[]> prims0 ( new int[primitives.size()]);
-    std::unique_ptr<int[]> prims1 ( new int[ (maxDepth+1) * primitives.size() ]);
+    auto prims0 = std::make_unique<int[]>( primitives.size() );
+    auto prims1 = std::make_unique<int[]>( (maxDepth+1)* primitives.size() );
 
     // initialise primNums for kd-tree construction
-    std::unique_ptr<int[]> primNums( new int[primitives.size()]);
+    auto primNums = std::make_unique<int[]>( primitives.size() );
     // initially all shapes overlap the root node, so insert all indices reflecting this
     for ( size_t i = 0 ; i < primitives.size() ; ++i )
         primNums[i] = i;

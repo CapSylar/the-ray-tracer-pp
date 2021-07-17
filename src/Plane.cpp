@@ -16,7 +16,7 @@ bool Plane::local_intersect(const Ray &ray, Intersection &record) const
         if ( t > 0 && t < ray.tMax )
         {
             ray.tMax = t;
-            record = Intersection( t , this );
+            record = Intersection(this);
             hit = true;
         }
     }

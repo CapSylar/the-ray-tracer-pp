@@ -5,7 +5,6 @@
 #include "UnitShape.h"
 #include "utilities.h"
 #include <algorithm>
-#include <vector>
 
 LightComputations::LightComputations(const Intersection &inter, const Ray &ray) :
         object(*inter.obj) , surface_point( ray.position(ray.tMax)) ,

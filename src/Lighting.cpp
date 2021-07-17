@@ -11,10 +11,7 @@ namespace Lighting
     {
         // get intersection list by intersection the ray in the world
         Intersection record;
-        bool hit = world.intersect(ray , record );
-
-        // get the first intersection
-//        const auto first_inter = Intersection::get_hit(list);
+        bool hit = world.intersect( ray , record );
 
         if (!hit) // if no intersection return black
             return Color3f(0, 0, 0);

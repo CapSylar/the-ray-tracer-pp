@@ -53,7 +53,7 @@ Canvas render( const Camera& cam , const World &world )
                     for (int x_inside = 0 ; x_inside < upperBoundX ; ++x_inside )
                     {
                         auto ray = cam.getRayForPixel( x + x_inside , y + y_inside );
-                        Color3f c = Lighting::color_at(world, ray, true , 5 );
+                        Color3f c = Lighting::color_at(world, ray, true , 15 );
                         canvas.write( c , x + x_inside  , y + y_inside );
                     }
                 }

@@ -13,13 +13,12 @@ class Mat4
 public:
     std::vector<float> m;
 
-    static Mat4 IDENTITY();
     static Mat4 view( Point3f from , Point3f to , Vec3f up );
 
-    Mat4() : m({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) {} // TODO: join this and IDENTITY()
+    Mat4() : m({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) {}
     Mat4( std::initializer_list<float> il ) : m( il.begin() , il.end() ) {}
 
-    Mat4 ( const Mat4 &ref ): m(ref.m) {} 
+    Mat4 ( const Mat4 &ref ): m(ref.m) {}
 
     Mat4& operator = ( Mat4 &ref ) = default;
 
@@ -38,7 +37,8 @@ public:
     }
 
     Mat4& transpose() ;
-    Mat4 transpose_copy() const;
+    [[nodiscard]] Mat4 transpose_copy() const;
+    Vec3f multiplyNormal (const Vec3f &normal ) const;
 
     Mat4& rotate_x( float r );
     Mat4& rotate_y( float r);
@@ -48,9 +48,9 @@ public:
     Mat4& shear( float Xy , float Xz , float Yx , float Yz , float Zx , float Zy );
 
     Mat4& invert() ;
-    Mat4 invert_copy () const;
+    [[nodiscard]] Mat4 invert_copy () const;
 
-    Vec3f multByTranspose( const Vec3f &vec ) const;
+    [[nodiscard]] Vec3f multByTranspose( const Vec3f &vec ) const;
 };
 
 bool operator == ( const Mat4 &lhs , const Mat4 &rhs );

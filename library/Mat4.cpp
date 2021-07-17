@@ -71,14 +71,6 @@ std::ostream& operator<< ( std::ostream& os , const Mat4 &rhs )
     return os;
 }
 
-
-
-
-Mat4 Mat4::IDENTITY()
-{
-    return Mat4({1,0,0,0  ,0,1,0,0  ,0,0,1,0  ,0,0,0,1}) ;
-}
-
 Mat4 Mat4::view( Point3f from , Point3f to , Vec3f up )
 {
     Vec3f forward = to - from ;
@@ -302,5 +294,10 @@ Mat4& Mat4::operator= ( Mat4 &&ref ) noexcept
 {
     m = std::move(ref.m);
     return *this;
+}
+
+Vec3f Mat4::multiplyNormal(const Vec3f &normal) const
+{
+    return multByTranspose(normal).normalize();
 }
 

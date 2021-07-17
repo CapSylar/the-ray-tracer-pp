@@ -41,7 +41,7 @@ bool Triangle::intersect(const Ray &ray, Intersection &record) const
     if ( t > 0 && t < ray.tMax )
     {
         ray.tMax = t;
-        record = Intersection( t , this , u , v );
+        record = Intersection(this, u, v);
         return true;
     }
 
