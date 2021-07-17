@@ -16,7 +16,11 @@ A complete C++ rewrite of the ray tracer I wrote previously in C
       - refraction
       - reflection
       - schlicks approximation
-      - only isolated transparent object 
+      - only isolated transparent object
+    
+- Shadows
+    - only sharp shadows
+    - no support for smooth shadows nor antialiasing
     
 - Acceleration Structures
     - Kd Trees
@@ -30,7 +34,20 @@ A complete C++ rewrite of the ray tracer I wrote previously in C
         - NVIDIA-CUDA ( to be added )
     
 
-## Some Screenshots
+# Some Screenshots
 
-### reflective Stanford Dragon
+## Reflective Stanford Dragon
+
 <img src=screenshots/stanford-dragon-reflective.png />
+
+## Metal Stanford Lucy Statue
+
+<img src=screenshots/lucy.png />
+
+## Glass Stanford Bunny
+
+<img src= screenshots/glass_bunny.png />
+
+# Some Notes
+Some objects seem to have weird pixel colors at some regions,
+I don't think its due to self intersection.

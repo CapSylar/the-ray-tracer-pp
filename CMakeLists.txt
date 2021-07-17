@@ -30,8 +30,6 @@ add_subdirectory( library )
 
 add_subdirectory( src )
 
-add_subdirectory( test )
-
 add_executable( ${PROJECT_NAME} src/main.cpp )
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
