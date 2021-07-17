@@ -13,7 +13,7 @@ public:
     explicit Cylinder (  Material *mat , float minimum = -INFINITY, float maximum = INFINITY , bool capped = false , Mat4 trans = Mat4() ) :
             UnitShape ( trans , mat ), zMin(minimum) , zMax(maximum) , is_capped(capped) {}
 
-    void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
+    bool local_intersect(const Ray &ray, Intersection &record) const override;
     [[nodiscard]] Vec3f local_normal_at(const Point3f &point) const override;
 
     [[nodiscard]] Bounds3f objectBounds() const override;
@@ -21,7 +21,7 @@ public:
 
 private:
     [[nodiscard]] static bool check_cap ( const Ray &ray , float t ) ;
-    void intersect_caps ( const Ray &ray , std::vector<Intersection> &list ) const ;
+    bool intersect_caps (const Ray &ray , Intersection &record ) const ;
 };
 
 

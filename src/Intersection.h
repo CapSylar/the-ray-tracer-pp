@@ -10,8 +10,8 @@ class Primitive;
 class Intersection
 {
 public:
+    Intersection();
     Intersection( float tt , const Primitive *shape ) : t(tt) , obj(shape) {}
-
     //TODO: an initializer for a delegating constructor must appear once
     Intersection ( float tt , const Primitive *shape , float u , float v ) : t(tt) , obj(shape) , _u(u) , _v(v) {}
 

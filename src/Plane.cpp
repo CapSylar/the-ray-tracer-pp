@@ -5,16 +5,23 @@
 #include "Vec3f.h"
 #include "Bounds3f.h"
 
-void Plane::local_intersect(const Ray &ray, std::vector<Intersection> &list) const
+bool Plane::local_intersect(const Ray &ray, Intersection &record) const
 {
-    if (fabsf(ray.direction.y) < eps ) // if parallel to the plane
+    bool hit = false;
+
+    if (fabsf(ray.direction.y) >= eps) // if not parallel to the plane
     {
-        return;
+        const auto t = -ray.origin.y / ray.direction.y;
+
+        if ( t > 0 && t < ray.tMax )
+        {
+            ray.tMax = t;
+            record = Intersection( t , this );
+            hit = true;
+        }
     }
-    else
-    {
-        list.emplace_back( -ray.origin.y / ray.direction.y , this );
-    }
+
+    return hit;
 }
 
 Vec3f Plane::local_normal_at(const Point3f &point) const

@@ -3,12 +3,15 @@
 #include "Ray.h"
 #include "Bounds3f.h"
 
-void UnitShape::intersect(const Ray &ray, std::vector<Intersection> &list) const
+bool UnitShape::intersect(const Ray &ray, Intersection &record) const
 {
     Ray copy_ray = ray;
     copy_ray.transform(worldToObject);
 
-    local_intersect( copy_ray , list );
+    bool intersect = local_intersect(copy_ray , record );
+    ray.tMax = copy_ray.tMax; // TODO: find cleaner way to handle this, maybe remove tMax from ray altogether
+
+    return intersect;
 }
 
 Vec3f UnitShape::normal_at(const Point3f &surface_point) const

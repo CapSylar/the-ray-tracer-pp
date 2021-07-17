@@ -3,8 +3,9 @@
 #include "Ray.h"
 #include "Bounds3f.h"
 
-void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &list) const
+bool Sphere::local_intersect(const Ray &local_ray, Intersection &record) const
 {
+    bool hit = false;
     Vec3f sphere_to_ray(local_ray.origin); // same as subtracting from the origin
 
     float a = local_ray.direction * local_ray.direction;
@@ -13,11 +14,27 @@ void Sphere::local_intersect(const Ray &local_ray, std::vector<Intersection> &li
 
     float delta = b*b - 4*a*c;
 
-    if ( delta >= 0 ) // we have 1+ intersection(s)
+    if ( delta >= 0 )
     {
-        list.emplace_back( ((-b - sqrtf(delta)) / (2*a)) , this );
-        list.emplace_back( ((-b + sqrtf(delta)) / (2*a)) , this );
+        const auto inter1 = (-b - sqrtf(delta)) / (2*a);
+        const auto inter2 = (-b + sqrtf(delta)) / (2*a);
+
+        // TODO: do we need to check both cases ?
+        if ( inter1 > 0 && inter1 < local_ray.tMax )
+        {
+            local_ray.tMax = inter1;
+            record.obj = this;
+            hit = true;
+        }
+        else if ( inter2 > 0 && inter2 < local_ray.tMax )
+        {
+            local_ray.tMax = inter2;
+            record.obj = this;
+            hit = true;
+        }
     }
+
+    return hit;
 }
 
 Vec3f Sphere::local_normal_at(const Point3f &local_point) const

@@ -10,20 +10,20 @@ namespace Lighting
     Color3f color_at(const World &world, const Ray &ray, bool calc_shadow, int remaining)
     {
         // get intersection list by intersection the ray in the world
-        const auto list = world.intersect(ray);
+        Intersection record;
+        bool hit = world.intersect(ray , record );
 
         // get the first intersection
-        const auto first_inter = Intersection::get_hit(list);
+//        const auto first_inter = Intersection::get_hit(list);
 
-        if (!first_inter.has_value()) // if no intersection return black
+        if (!hit) // if no intersection return black
             return Color3f(0, 0, 0);
 
         // compute the necessary values for Phong shading
-        LightComputations comps ( first_inter.value() , ray, list  );
+        LightComputations comps ( record , ray );
 
         return shade_hit( world , comps , calc_shadow , remaining );
     }
-
 
     Color3f shade_hit ( const World &world , const LightComputations &comps , bool calc_shadow , int remaining )
     {
@@ -84,14 +84,13 @@ namespace Lighting
         auto p_to_light = world.getLight().position - point;
         float distance = p_to_light.length() ;
 
-        // TODO: should i normalize here ?
-        Ray shadow_ray ( point , p_to_light.normalize() );
-        auto list = world.intersect(shadow_ray);
+        Ray shadow_ray ( point , p_to_light.normalize() , distance ); // tMax = distance
 
-        auto hit = Intersection::get_hit(list);
+        Intersection record;
+        bool hit = world.intersectP(shadow_ray , record );
 
         // return true if we have a hit and that hit happened closer to the point than the distance to the light source
-        return ( hit.has_value() && hit->t < distance ) ;
+        return hit ;
     }
 
     Color3f get_reflected_color(const World &world, const LightComputations &comps, int remaining)
@@ -106,13 +105,6 @@ namespace Lighting
             // TODO: it would maybe better to not compute reflected inside comps since it may not be used
             // defer its creation until this point where we are sure that we would need it
             Ray reflected_ray(comps.over_point , comps.reflected );
-
-//#ifndef NDEBUG
-//            const auto list = world.intersect( reflected_ray );
-//            const auto closest = Intersection::get_hit(list) ;
-//
-//            assert( closest.has_value() && (closest.value().obj != &(comps.object)) ); // test for self intersection
-//#endif
 
             return color_at(world, reflected_ray, true , remaining ) * comps.object.getMaterial()->reflectance ;
         }

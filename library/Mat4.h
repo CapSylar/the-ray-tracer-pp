@@ -6,6 +6,7 @@
 
 class Vec3f;
 class Point3f;
+class Ray;
 
 class Mat4
 {

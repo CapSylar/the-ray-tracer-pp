@@ -2,13 +2,14 @@
 #include <memory>
 #include <cstring>
 #include <algorithm>
+#include <utility>
 #include "Vec3f.h"
 #include "Ray.h"
 #include "Intersection.h"
 
-KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int traversalCost, float emptyBonus,
+KdTreeAccel::KdTreeAccel(std::vector<std::unique_ptr<Primitive>> prims, int intersectCost, int traversalCost, float emptyBonus,
                          int maxPrims, int maxDepth) : intersectCost(intersectCost) , traversalCost(traversalCost) , maxPrims(maxPrims),
-                                                       emptyBonus(emptyBonus) , primitives(prims) , nodes(nullptr)
+                                                       emptyBonus(emptyBonus) , primitives(std::move(prims)) , nodes(nullptr)
 {
     nAllocedNodes = nextFreeNode = 0;
 
@@ -19,11 +20,11 @@ KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int 
      std::vector<Bounds3f> primBounds; // save the computed bounds of all primitives along the way since these calculations are slow
      // collect all the world bounds of all the primitives and join them
 
-     for ( const auto shape : primitives )
+     for (const auto & primitive : primitives)
      {
-        const auto b = shape->worldBounds();
-        bounds = Union( bounds , b );
-        primBounds.push_back(b); // save the bounds of the current Primitive
+         const auto bound = primitive->worldBounds();
+         bounds = Union( bounds , bound );
+         primBounds.push_back(bound); // save the bounds of the current Primitive
      }
 
     //TODO: maybe we can use std::pair here?
@@ -47,7 +48,7 @@ KdTreeAccel::KdTreeAccel(std::vector<Primitive *> prims, int intersectCost, int 
     buildTree(0 , bounds , primBounds , primNums.get() , primitives.size() , maxDepth , edges , prims0.get() , prims1.get() );
 }
 
-void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) const
+bool KdTreeAccel::intersect(const Ray &ray, Intersection &record) const
 {
     struct KdToDo
     {
@@ -58,13 +59,14 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
     float tMin, tMax;
 
     if ( !bounds.intersect( ray , &tMin , &tMax ))
-        return;
+        return false;
 
     Vec3f invDir ( 1 / ray.direction.x , 1/ray.direction.y , 1/ray.direction.z );
     constexpr int maxTodo = 64;
     // record the nodes yet to be processed
     KdToDo todo[maxTodo];
     int todoPos = 0;
+    bool hit = false;
 
     const KdAccelNode *node = nodes; // start with root
 
@@ -72,6 +74,8 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
     {
         // we can stop if we found a hit closer than the current node
         // but in our case we want to record all hits
+        if ( ray.tMax < tMin )
+            break;
 
         if ( !node->isLeaf() ) // is an interior node
         {
@@ -128,10 +132,11 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
             if ( nPrimitives == 1 )
             {
                 // in this case the index is stored directly in the node
-                const auto p = primitives[node->onePrimitive];
+                const auto &p = primitives[node->onePrimitive];
                 // intersect the primitive
 
-                p->intersect( ray , list );
+                if(p->intersect(ray , record ))
+                    hit = true;
             }
             else
             {
@@ -139,9 +144,10 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
                 {
                     // in this case the number stored is essentially an index into an index
                     int index = primitiveIndices[node->primitiveIndicesOffset + i];
-                    const auto p = primitives[index];
+                    const auto &p = primitives[index];
 
-                    p ->intersect( ray , list );
+                    if(p->intersect(ray , record ))
+                        hit = true;
                 }
             }
 
@@ -160,6 +166,7 @@ void KdTreeAccel::intersect(const Ray &ray, std::vector<Intersection> &list) con
 
     }
 
+    return hit;
 }
 void KdTreeAccel::buildTree(int nodeNum, const Bounds3f &nodeBounds, const std::vector<Bounds3f> &allPrimBounds, int *primNums,
                             int nPrimitives, int depth, const std::unique_ptr<BoundEdge[]> *edges, int *prims0, int *prims1,

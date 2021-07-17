@@ -19,10 +19,10 @@ public:
 
     explicit UnitShape ( Mat4 trans , Material* mat ) : GeometricPrimitive(mat) , objectToWorld(trans) ,worldToObject(trans.invert()) {}
 
-    void intersect(const Ray &ray, std::vector<Intersection> &list) const override ;
+    bool intersect(const Ray &ray, Intersection &record) const override ;
     [[nodiscard]] Vec3f normal_at(const Point3f &surface_point) const override ;
 
-    virtual void local_intersect ( const Ray &ray , std::vector<Intersection> &list ) const = 0;
+    virtual bool local_intersect (const Ray &ray , Intersection &record ) const = 0;
     [[nodiscard]] virtual Vec3f local_normal_at ( const Point3f &point ) const = 0 ;
 
     [[nodiscard]] Bounds3f worldBounds() const override;

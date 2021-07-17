@@ -19,10 +19,11 @@ public:
     Triangle( Material *mat , Point3f p1 , Point3f p2 , Point3f p3 , Vec3f n1 , Vec3f n2, Vec3f n3 ) :
             GeometricPrimitive(mat) , _p1(p1) , _p2(p2) , _p3(p3) , e1(p2-p1) , e2(p3-p1) ,  _n1(n1) , _n2(n2) , _n3(n3) ,  isSmooth(true) {}
 
-    void intersect(const Ray &ray, std::vector<Intersection> &list) const override ;
+    bool intersect(const Ray &ray, Intersection &record) const override ;
     [[nodiscard]] Vec3f normal_at(const Point3f &point) const override ;
-
     [[nodiscard]] Bounds3f worldBounds() const override;
+
+    virtual ~Triangle();
 };
 
 

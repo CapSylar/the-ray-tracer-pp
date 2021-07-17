@@ -4,8 +4,9 @@
 #include "Intersection.h"
 #include "Bounds3f.h"
 
-void Cube::local_intersect(const Ray &ray, std::vector<Intersection> &list) const
+bool Cube::local_intersect(const Ray &ray, Intersection &record) const
 {
+    bool hit = false;
     // TODO: optimize intersection testing
 
     const auto x_pair = get_axis_intersections( ray.origin.x , ray.direction.x );
@@ -15,11 +16,14 @@ void Cube::local_intersect(const Ray &ray, std::vector<Intersection> &list) cons
     const float tmin = std::max( std::max(x_pair.first , y_pair.first), z_pair.first ) ;
     const float tmax = std::min( std::min(x_pair.second , y_pair.second) , z_pair.second ) ;
 
-    if ( tmin > tmax ) // no intersection
-        return;
+    if ( tmin <= tmax && tmin < ray.tMax ) // if tmin > tmax => no intersection
+    {
+        ray.tMax = tmin;
+        record.obj = this;
+        hit = true;
+    }
 
-    list.emplace_back( tmin , this );
-    list.emplace_back( tmax , this );
+    return hit;
 }
 
 Vec3f Cube::local_normal_at(const Point3f &point) const

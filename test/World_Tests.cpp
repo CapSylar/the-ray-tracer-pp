@@ -19,7 +19,7 @@ TEST_CASE("testing world creation")
         w.add ( default_half );
 
         Ray ray( Point3f(0,0,-5) , Vec3f(0,0,1) );
-        auto list = w.intersect( ray );
+        auto list = w.intersect(ray, <#initializer#>);
 
         REQUIRE(list.size() == 4);
         REQUIRE(list[0].t == 4);

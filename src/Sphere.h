@@ -14,7 +14,7 @@ public:
     explicit Sphere( Material *mat , Mat4 trans = Mat4() ) : UnitShape( trans , mat ) {}
 
 private:
-    void local_intersect(const Ray &ray, std::vector<Intersection> &list) const override;
+    bool local_intersect(const Ray &local_ray, Intersection &record) const override;
     [[nodiscard]] Vec3f local_normal_at(const Point3f &point) const override;
 
 public:

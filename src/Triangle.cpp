@@ -3,7 +3,7 @@
 #include "Intersection.h"
 #include "Bounds3f.h"
 
-void Triangle::intersect(const Ray &ray, std::vector<Intersection> &list) const
+bool Triangle::intersect(const Ray &ray, Intersection &record) const
 {
     // `Moeller-Trumbore` ray triangle intersection algorithm
     // https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection
@@ -13,7 +13,7 @@ void Triangle::intersect(const Ray &ray, std::vector<Intersection> &list) const
     const auto determinant = e1 * dir_cross_e2;
 
     if ( std::abs(determinant) < eps )
-        return;
+        return false;
 
     const auto inv = 1 / determinant; // precompute the inverse needed by cramer's rule
 
@@ -24,7 +24,7 @@ void Triangle::intersect(const Ray &ray, std::vector<Intersection> &list) const
     // if u < 0 or u > 1 then the point is outside the triangle, no intersection
 
     if ( u < 0 || u > 1 )
-        return;
+        return false;
 
     // calculate the v coordinate of the triangle intersection
     const auto origin_cross_e1 = cross( p1_to_origin , e1 );
@@ -33,11 +33,19 @@ void Triangle::intersect(const Ray &ray, std::vector<Intersection> &list) const
     // if v < 0 or v > 1 then the point is outside the triangle, no intersection
 
     if ( v < 0 || (u+v) > 1 )
-        return;
+        return false;
 
     // calculate t by solving for the final unknown using cramer
     const auto t = inv * ( e2 * origin_cross_e1 );
-    list.emplace_back( t , this , u , v );
+
+    if ( t > 0 && t < ray.tMax )
+    {
+        ray.tMax = t;
+        record = Intersection( t , this , u , v );
+        return true;
+    }
+
+    return false;
 }
 
 Vec3f Triangle::normal_at(const Point3f &point) const
@@ -60,3 +68,5 @@ Bounds3f Triangle::worldBounds() const
 {
     return Union(Bounds3f(_p1,_p2) , _p3 );
 }
+
+Triangle::~Triangle() = default;

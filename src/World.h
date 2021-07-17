@@ -15,14 +15,14 @@ class World
 public:
     World() = default;
 
-    void add ( Primitive &shape )
+    void add ( std::shared_ptr<Primitive> &&primitive )
     {
-        objects.push_back(&shape);
+        objects.push_back(primitive);
     }
 
-    void add ( Light &light )
+    void add ( std::shared_ptr<Light> &&light )
     {
-        lights.push_back(&light);
+        lights.push_back(light);
     }
 
     [[nodiscard]] Light& getLight() const
@@ -30,12 +30,12 @@ public:
         return *(lights[0]);
     }
 
-    [[nodiscard]] std::vector<Intersection> intersect ( const Ray &ray ) const ;
+    [[nodiscard]] bool intersect(const Ray &ray, Intersection &record) const; // used for normal rays
+    bool intersectP ( const Ray &ray , Intersection &record ) const; // used for shadown rays
 
 private:
-    std::vector<Primitive *> objects;
-    //TODO: for now we only have a single light source, to extend this in the future
-    std::vector<Light *> lights;
+    std::vector<std::shared_ptr<Primitive>> objects;
+    std::vector<std::shared_ptr<Light>> lights;
 };
 
 Canvas render( const Camera& cam , const World &world );

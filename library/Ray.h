@@ -9,7 +9,7 @@
 class Ray
 {
 public:
-    Ray ( Point3f orig , Vec3f dir ): origin(orig) , direction(dir) {}
+    Ray ( Point3f orig , Vec3f dir , float tMax = INFINITY ): origin(orig) , direction(dir) , tMax(tMax) {}
 
     [[nodiscard]] Point3f position( float t ) const ;
     void transform (const Mat4& trans_matrix );
@@ -17,6 +17,7 @@ public:
 
     Point3f origin;
     Vec3f direction;
+    mutable float tMax;
 };
 
 Vec3f reflect ( const Vec3f &in , const Vec3f &normal );

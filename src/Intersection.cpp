@@ -1,16 +1,15 @@
 #include "Intersection.h"
 #include <algorithm>
-#include <optional>
 #include "Sphere.h"
 
-std::optional<Intersection> Intersection::get_hit(const std::vector<Intersection> &list)
-{
-    // assume the list is sorted
-    auto ret = std::lower_bound( list.begin() , list.end() , Intersection( 0 , nullptr ) );
-    if ( ret != list.end() )
-        return *ret;
-    return std::nullopt;
-}
+//std::optional<Intersection> Intersection::get_hit(const std::vector<Intersection> &list)
+//{
+//    // assume the list is sorted
+//    auto ret = std::lower_bound( list.begin() , list.end() , Intersection( 0 , nullptr ) );
+//    if ( ret != list.end() )
+//        return *ret;
+//    return std::nullopt;
+//}
 
 bool operator == ( const Intersection &lhs , const Intersection &rhs )
 {
@@ -28,3 +27,5 @@ std::ostream& operator << ( std::ostream& os , const Intersection &rhs )
 
     return os;
 }
+
+Intersection::Intersection() : t(INFINITY) , obj(nullptr) {}

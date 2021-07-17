@@ -13,9 +13,9 @@ struct BoundEdge;
 class KdTreeAccel : public Aggregate
 {
 public:
-    explicit KdTreeAccel(std::vector<Primitive *> prims , int intersectCost = 80 , int traversalCost = 1 , float emptyBonus = 0.5f ,
-                         int maxPrims = 1 , int maxDepth = -1);
-    void intersect(const Ray &ray, std::vector<Intersection> &list) const override;
+    explicit KdTreeAccel(std::vector<std::unique_ptr<Primitive>> prims , int intersectCost = 80, int traversalCost = 1, float emptyBonus = 0.5f,
+                         int maxPrims = 1, int maxDepth = -1);
+    bool intersect(const Ray &ray, Intersection &record) const override;
 
     [[nodiscard]] Bounds3f worldBounds() const override;
 
@@ -26,7 +26,7 @@ private:
     const int intersectCost , traversalCost, maxPrims;
     const float emptyBonus;
 
-    std::vector<Primitive *> primitives; // stores the total primitives present in the tree
+    std::vector<std::unique_ptr<Primitive>> primitives; // stores the total primitives present in the tree
     std::vector<int> primitiveIndices;
     KdAccelNode *nodes;
     int nAllocedNodes, nextFreeNode;

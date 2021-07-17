@@ -5,18 +5,28 @@
 #include "Canvas.h"
 #include "Lighting.h"
 
-std::vector<Intersection> World::intersect(const Ray &ray) const
+bool World::intersect(const Ray &ray, Intersection &record) const
 {
-    std::vector<Intersection> list;
-    // intersect each object in the world and put all the intersections in the vector
-    for ( const auto obj : objects )
+    // intersect each object in the world
+    bool flag = false;
+    for ( const auto &obj : objects )
     {
-        obj->intersect( ray  , list );
+        bool didIntersect = obj->intersect( ray , record );
+        if ( !flag ) flag = didIntersect;
     }
 
-    // sort them before returning, because hit() assumes them already sorted
-    std::sort( list.begin() , list.end() );
-    return list;
+    return flag;
+}
+
+bool World::intersectP(const Ray &ray, Intersection &record) const
+{
+    for ( const auto &obj : objects )
+    {
+        if ( obj->intersect( ray , record )) // we just care if an object is present that occludes the light source
+            return true;
+    }
+
+    return false;
 }
 
 Canvas render( const Camera& cam , const World &world )
@@ -49,7 +59,7 @@ Canvas render( const Camera& cam , const World &world )
                 }
                 x += upperBoundX-1; // -1 to account for ++x
             }
-            y += upperBoundY-1;
+            y += upperBoundY-1; // -1 to account for ++y
         }
     }
 

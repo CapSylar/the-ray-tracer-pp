@@ -12,7 +12,7 @@ class Ray;
 struct LightComputations
 {
     LightComputations( const Intersection& inter , const Ray &ray ) ;
-    LightComputations( const Intersection& inter , const Ray &ray , const std::vector<Intersection> &list );
+//    LightComputations( const Intersection& inter , const Ray &ray , const std::vector<Intersection> &list );
     LightComputations ( const Primitive &Object , Point3f position , Vec3f Normal , Vec3f Eye ) : object(Object) ,
             surface_point(position) , normal(Normal) , eye(Eye) , n1(1) , n2(1)  {}
 

@@ -3,6 +3,7 @@
 #include "Transformation.h"
 #include "Vec3f.h"
 #include "Point3f.h"
+#include "Ray.h"
 
 bool operator == ( const Mat4 &lhs , const Mat4 &rhs )
 {
